@@ -1,0 +1,183 @@
+import { useState, type ComponentType } from "react";
+import {
+  Search,
+  FileText,
+  FileSpreadsheet,
+  Presentation,
+  Image as ImageIcon,
+  Plus,
+  Clock,
+  type LucideProps,
+} from "lucide-react";
+
+type IconType = ComponentType<LucideProps>;
+
+interface FileTypeStat {
+  id: string;
+  extension: string;
+  count: number;
+  icon: IconType;
+  iconColor: string;
+  iconBg: string;
+}
+
+const FILE_TYPE_STATS: FileTypeStat[] = [
+  { id: "pdf", extension: ".pdf", count: 4, icon: FileText, iconColor: "text-red-500", iconBg: "bg-red-50" },
+  { id: "xls", extension: ".xls", count: 6, icon: FileSpreadsheet, iconColor: "text-green-600", iconBg: "bg-green-50" },
+  { id: "pptx", extension: ".pptx", count: 5, icon: Presentation, iconColor: "text-orange-500", iconBg: "bg-orange-50" },
+  { id: "txt", extension: ".txt", count: 10, icon: FileText, iconColor: "text-gray-500", iconBg: "bg-gray-100" },
+  { id: "jpeg", extension: ".jpeg", count: 7, icon: ImageIcon, iconColor: "text-blue-500", iconBg: "bg-blue-50" },
+  { id: "png", extension: ".png", count: 12, icon: ImageIcon, iconColor: "text-blue-500", iconBg: "bg-blue-50" },
+  { id: "jpg", extension: ".jpg", count: 14, icon: ImageIcon, iconColor: "text-blue-500", iconBg: "bg-blue-50" },
+];
+
+const RECENT_SEARCHES: string[] = [
+  "termination clause",
+  "Q3 liability report",
+  "vendor NDA 2025",
+  "audit checklist",
+];
+
+const NexdocLogo = () => (
+  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-black">
+    <svg width="16" height="16" viewBox="0 0 80 80" aria-hidden="true">
+      <path
+        d="M10 8 H32 L40 16 V60 C40 61.7 38.7 63 37 63 H10 C8.3 63 7 61.7 7 60 V11 C7 9.3 8.3 8 10 8 Z"
+        fill="none"
+        stroke="#3B82F6"
+        strokeWidth={7}
+        strokeLinejoin="round"
+      />
+      <path
+        d="M22 20 H46 L57 31 V72 C57 73.7 55.7 75 54 75 H22 C20.3 75 19 73.7 19 72 V23 C19 21.3 20.3 20 22 20 Z"
+        fill="#3B82F6"
+      />
+      <path
+        d="M32 38 L44 47.5 L32 57"
+        fill="none"
+        stroke="#FFFFFF"
+        strokeWidth={7.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  </div>
+);
+
+export interface NexdocDashboardProps {
+  totalFiles?: number;
+  filesAddedThisWeek?: number;
+  searchesThisWeek?: number;
+  fileTypeStats?: FileTypeStat[];
+  recentSearches?: string[];
+  onSearch?: (query: string) => void;
+  onSelectRecentSearch?: (query: string) => void;
+  onAddFiles?: () => void;
+}
+
+export default function Dashboard({
+  totalFiles = 58,
+  filesAddedThisWeek = 6,
+  searchesThisWeek = 142,
+  fileTypeStats = FILE_TYPE_STATS,
+  recentSearches = RECENT_SEARCHES,
+  onSearch = () => {},
+  onSelectRecentSearch = () => {},
+  onAddFiles = () => {},
+}: NexdocDashboardProps) {
+  const [query, setQuery] = useState("");
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onSearch(query);
+  };
+
+  return (
+    <div className="h-full w-full min-w-[640px] overflow-y-auto bg-white px-6 py-6 md:px-10 md:py-8">
+      {/* Top row: brand + status */}
+      <div className="mb-6 flex items-center justify-between">
+          <span className="text-lg font-semibold text-gray-900">Dashboard</span>
+        <div className="flex items-center gap-2 rounded-full bg-gray-100 px-3.5 py-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-gray-500" />
+          <span className="text-xs text-gray-500">Offline &middot; secured</span>
+        </div>
+      </div>
+
+      {/* Stats row */}
+      <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm sm:col-span-1">
+          <p className="mb-1.5 text-sm text-gray-500">Total files indexed</p>
+          <div className="flex items-baseline gap-2">
+            <p className="text-2xl font-semibold text-gray-900 sm:text-5xl">{totalFiles}</p>
+            <span className="text-md font-medium text-green-600">
+              +{filesAddedThisWeek} this week
+            </span>
+          </div>
+        </div>
+        <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+          <p className="mb-1.5 text-sm text-gray-500">Searches this week</p>
+          <p className="text-2xl font-semibold text-gray-900 sm:text-5xl">{searchesThisWeek}</p>
+        </div>
+      </div>
+
+      {/* File type tiles */}
+      <div className="mb-6 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+        {fileTypeStats.map((item) => {
+          const Icon = item.icon;
+          return (
+            <div
+              key={item.id}
+              className="rounded-lg border border-gray-100 bg-white p-3 text-center shadow-sm"
+            >
+              <div
+                className={`mx-auto mb-2 flex h-8 w-8 items-center justify-center rounded-md ${item.iconBg}`}
+              >
+                <Icon className={`h-8 w-8 ${item.iconColor}`} strokeWidth={1.8} />
+              </div>
+              <p className="text-lg font-semibold text-gray-900">{item.count}</p>
+              <p className="text-[14px] text-gray-400">{item.extension}</p>
+            </div>
+          );
+        })}
+        <button
+          type="button"
+          onClick={onAddFiles}
+          className="flex items-center justify-center rounded-lg border border-dashed border-gray-200 p-3 text-gray-300 hover:border-gray-300 hover:text-gray-400"
+        >
+          <Plus className="h-4 w-4" strokeWidth={1.8} />
+        </button>
+      </div>
+
+      {/* Search bar */}
+      <form onSubmit={handleSubmit} className="relative mb-5">
+        <Search
+          className="pointer-events-none absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-400"
+          strokeWidth={1.8}
+        />
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search a topic, clause, or file name"
+          className="h-12 w-full rounded-xl border-none bg-gray-100 pl-11 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </form>
+
+      {/* Recent searches */}
+      <p className="mb-2.5 text-xs font-medium text-gray-400">Recent searches</p>
+      <div className="flex flex-wrap gap-2">
+        {recentSearches.map((search) => (
+          <button
+            key={search}
+            type="button"
+            onClick={() => onSelectRecentSearch(search)}
+            className="flex items-center gap-1.5 rounded-full border border-gray-100 bg-white px-4 py-2 text-sm text-gray-800 shadow-sm hover:border-gray-200 hover:bg-gray-50"
+          >
+            <Clock className="h-3.5 w-3.5 text-gray-400" strokeWidth={1.8} />
+            {search}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
