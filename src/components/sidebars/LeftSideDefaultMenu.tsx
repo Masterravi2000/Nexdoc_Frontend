@@ -6,6 +6,8 @@ import {
   Settings,
   Info,
   type LucideProps,
+  Upload,
+  Search,
 } from "lucide-react";
 
 type IconType = ComponentType<LucideProps>;
@@ -25,7 +27,8 @@ interface TagItem {
 const NAV_ITEMS: NavItem[] = [
   { id: "home", label: "Home", icon: Home },
   { id: "recents", label: "Recents", icon: Clock },
-  { id: "favorites", label: "Upload", icon: Star },
+  { id: "upload", label: "Upload", icon: Upload },
+  { id: "search", label: "Search", icon: Search },
 ];
 
 const TAGS: TagItem[] = [
@@ -103,7 +106,7 @@ export default function LeftSideDefaultMenu({
     <nav className="flex h-full w-full flex-col bg-gray-50 p-4 py-6">
       {/* Header */}
       <div className="mb-6 flex items-center justify-between px-3">
-        <h2 className="text-[25px] font-bold text-gray-900">Nexdoc</h2>
+        <h2 className="text-[25px] font-bold text-[#4F90E4]">Nexdoc</h2>
       </div>
 
       <div className="flex-1 overflow-y-auto">
