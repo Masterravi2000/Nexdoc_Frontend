@@ -2,13 +2,13 @@ import { useState, type ComponentType } from "react";
 import {
   Home,
   Clock,
-  Star,
   Settings,
   Info,
   type LucideProps,
   Upload,
   Search,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 type IconType = ComponentType<LucideProps>;
 
@@ -35,7 +35,6 @@ const TAGS: TagItem[] = [
   { id: "Settings", label: "Settings", icon: Settings },
   { id: "About", label: "About", icon: Info },
 ];
-
 
 interface RowButtonProps {
   icon?: IconType;
@@ -89,12 +88,23 @@ export default function LeftSideDefaultMenu({
   onSelectTag = () => {},
   onQuickAccessDrop = () => {},
 }: LeftSideDefaultMenuProps) {
-  const [activeNav, setActiveNav] = useState<string | null>("recents");
+  const navigate = useNavigate();
+  const [activeNav, setActiveNav] = useState<string | null>(null);
   const [activeTag, setActiveTag] = useState<string | null>(null);
 
-  const handleNavClick = (id: string) => {
-    setActiveNav(id);
-    onNavigate(id);
+  const handleNavClick = (label: string) => {
+    if (label === "Home") {
+      setActiveNav("home");
+      navigate("/");
+    }
+    if (label === "Upload") {
+      setActiveNav("upload");
+      navigate("/upload");
+    }
+    if (label === "Search") {
+      setActiveNav("search")
+      navigate("/search")
+    }
   };
 
   const handleTagClick = (id: string) => {
@@ -118,11 +128,10 @@ export default function LeftSideDefaultMenu({
               icon={item.icon}
               label={item.label}
               active={activeNav === item.id}
-              onClick={() => handleNavClick(item.id)}
+              onClick={() => handleNavClick(item.label)}
             />
           ))}
         </div>
-
       </div>
 
       <div className="w-full h-[1px] bg-gray-300" />
