@@ -11,7 +11,18 @@ import {
   TriangleAlert,
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../redux/hook";
-import { addAttachedFiles, removeAttachedFile, clearAttachedFiles } from "../redux/upload/uploadSlice";
+import {
+  addAttachedFiles,
+  removeAttachedFile,
+  clearAttachedFiles,
+} from "../redux/upload/uploadSlice";
+import {
+  uploadImageThunk,
+  uploadPdfThunk,
+  uploadPptxThunk,
+  uploadTxtThunk,
+  uploadXlsThunk,
+} from "../redux/upload/uploadThunk";
 
 type IconType = ComponentType<LucideProps>;
 
@@ -105,14 +116,10 @@ export interface UploadPageProps {
   onUploadComplete?: (files: UploadingFile[]) => void;
 }
 
-export default function Upload({
-}: UploadPageProps) {
-
+export default function Upload({}: UploadPageProps) {
   const dispatch = useAppDispatch();
 
-  const attached = useAppSelector(
-    (state) => state.upload.attached,
-  )
+  const attached = useAppSelector((state) => state.upload.attached);
 
   const [uploading, setUploading] = useState<UploadingFile[]>([]);
   const fileInputRefs = useRef<Record<FileTypeId, HTMLInputElement | null>>({
@@ -134,62 +141,62 @@ export default function Upload({
   };
 
   const handleFilesSelected = (
-  typeId: FileTypeId,
-  fileList: FileList | null,
-) => {
-  if (!fileList) return;
+    typeId: FileTypeId,
+    fileList: FileList | null,
+  ) => {
+    if (!fileList) return;
 
-  const files = Array.from(fileList);
-  const currentList = attached[typeId];
+    const files = Array.from(fileList);
+    const currentList = attached[typeId];
 
-  const isDuplicate = files.some((file) =>
-    currentList.some(
-      (attachedFile) =>
-        attachedFile.file.name === file.name &&
-        attachedFile.file.size === file.size &&
-        attachedFile.file.lastModified === file.lastModified,
-    ),
-  );
+    const isDuplicate = files.some((file) =>
+      currentList.some(
+        (attachedFile) =>
+          attachedFile.file.name === file.name &&
+          attachedFile.file.size === file.size &&
+          attachedFile.file.lastModified === file.lastModified,
+      ),
+    );
 
-  if (isDuplicate) {
-    setNotify(true);
-  }
+    if (isDuplicate) {
+      setNotify(true);
+    }
 
-  const totalAttached = Object.values(attached).reduce(
-    (sum, list) => sum + list.length,
-    0,
-  );
+    const totalAttached = Object.values(attached).reduce(
+      (sum, list) => sum + list.length,
+      0,
+    );
 
-  const remainingSlots = Math.min(
-    MAX_PER_TYPE - currentList.length,
-    MAX_TOTAL - totalAttached,
-  );
+    const remainingSlots = Math.min(
+      MAX_PER_TYPE - currentList.length,
+      MAX_TOTAL - totalAttached,
+    );
 
-  const newFiles = files
-    .filter(
-      (file) =>
-        !currentList.some(
-          (attachedFile) =>
-            attachedFile.file.name === file.name &&
-            attachedFile.file.size === file.size &&
-            attachedFile.file.lastModified === file.lastModified,
-        ),
-    )
-    .slice(0, remainingSlots)
-    .map((file) => ({
-      id: nextId(),
-      name: file.name,
-      file,
-    }));
+    const newFiles = files
+      .filter(
+        (file) =>
+          !currentList.some(
+            (attachedFile) =>
+              attachedFile.file.name === file.name &&
+              attachedFile.file.size === file.size &&
+              attachedFile.file.lastModified === file.lastModified,
+          ),
+      )
+      .slice(0, remainingSlots)
+      .map((file) => ({
+        id: nextId(),
+        name: file.name,
+        file,
+      }));
 
-  if (newFiles.length > 0) {
-    dispatch(addAttachedFiles({ typeId, files: newFiles }));
-  }
-};
+    if (newFiles.length > 0) {
+      dispatch(addAttachedFiles({ typeId, files: newFiles }));
+    }
+  };
 
- const handleRemove = (typeId: FileTypeId, fileId: string) => {
-  dispatch(removeAttachedFile({ typeId, fileId }));
-};
+  const handleRemove = (typeId: FileTypeId, fileId: string) => {
+    dispatch(removeAttachedFile({ typeId, fileId }));
+  };
 
   const simulateUpload = useCallback((file: UploadingFile) => {
     const step = () => {
@@ -212,22 +219,46 @@ export default function Upload({
   }, []);
 
   const handleUpload = () => {
-    const toUpload: UploadingFile[] = [];
-    FILE_TYPE_CONFIGS.forEach((config) => {
-      attached[config.id].forEach((af) => {
-        toUpload.push({
-          id: af.id,
-          name: af.name,
-          fileType: config.id,
-          progress: 0,
-          status: "uploading",
-        });
+    //for image upload
+    if (attached.img.length > 0) {
+      const imageData = new FormData();
+      attached.img.forEach((file) => {
+        imageData.append("files", file.file);
       });
-    });
-    if (toUpload.length === 0) return;
-
-    setUploading((prev) => [...prev, ...toUpload]);
-    toUpload.forEach((f) => simulateUpload(f));
+      dispatch(uploadImageThunk(imageData));
+    }
+    //for pdf upload
+    if (attached.pdf.length > 0) {
+      const pdfData = new FormData();
+      attached.pdf.forEach((file) => {
+        pdfData.append("files", file.file);
+      });
+      dispatch(uploadPdfThunk(pdfData));
+    }
+    //for pptx upload
+    if (attached.ppt.length > 0) {
+      const pptData = new FormData();
+      attached.ppt.forEach((file) => {
+        pptData.append("files", file.file);
+      });
+      dispatch(uploadPptxThunk(pptData));
+    }
+    //for xls upload
+    if (attached.xls.length > 0) {
+      const xlsData = new FormData();
+      attached.xls.forEach((file) => {
+        xlsData.append("files", file.file);
+      });
+      dispatch(uploadXlsThunk(xlsData));
+    }
+    //for txt upload
+    if (attached.txt.length > 0) {
+      const txtData = new FormData();
+      attached.txt.forEach((file) => {
+        txtData.append("files", file.file);
+      });
+      dispatch(uploadTxtThunk(txtData));
+    }
     dispatch(clearAttachedFiles());
   };
 
@@ -252,9 +283,7 @@ export default function Upload({
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <p className="text-lg font-[600] text-gray-900">
-            Upload documents
-          </p>
+          <p className="text-lg font-[600] text-gray-900">Upload documents</p>
           <p className="text-xs text-gray-400">
             Up to 5 files per type &middot; 25 files total
           </p>
