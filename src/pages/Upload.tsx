@@ -1,4 +1,10 @@
-import { useState, useRef, useCallback, type ComponentType } from "react";
+import {
+  useState,
+  useRef,
+  useCallback,
+  type ComponentType,
+  useEffect,
+} from "react";
 import {
   FileText,
   FileSpreadsheet,
@@ -23,6 +29,9 @@ import {
   uploadTxtThunk,
   uploadXlsThunk,
 } from "../redux/upload/uploadThunk";
+import { useSelector } from "react-redux";
+import type { RootState } from "../redux/store";
+import { fetchUploadStatusThunk } from "../redux/status/fetchUploadStatusThunk";
 
 type IconType = ComponentType<LucideProps>;
 
@@ -106,7 +115,7 @@ interface UploadingFile {
   name: string;
   fileType: FileTypeId;
   progress: number;
-  status: "uploading" | "done";
+  status: "uploading" | "done" | "failed";
 }
 
 let idCounter = 0;
@@ -118,6 +127,7 @@ export interface UploadPageProps {
 
 export default function Upload({}: UploadPageProps) {
   const dispatch = useAppDispatch();
+  const { uploadedFiles } = useSelector((state: RootState) => state.upload);
 
   const attached = useAppSelector((state) => state.upload.attached);
 
@@ -198,27 +208,69 @@ export default function Upload({}: UploadPageProps) {
     dispatch(removeAttachedFile({ typeId, fileId }));
   };
 
-  const simulateUpload = useCallback((file: UploadingFile) => {
-    const step = () => {
-      setUploading((prev) =>
-        prev.map((f) => {
-          if (f.id !== file.id || f.status === "done") return f;
-          const next = Math.min(100, f.progress + Math.random() * 18 + 6);
-          return {
-            ...f,
-            progress: next,
-            status: next >= 100 ? "done" : "uploading",
-          };
-        }),
-      );
+  const updateUploadProgress = useCallback((fileId: string, status: string) => {
+    const progressMap: Record<string, number> = {
+      QUEUED: 20,
+      PROCESSING: 40,
+      CHUNKING: 60,
+      EMBEDDING: 80,
+      STORING: 90,
+      COMPLETED: 100,
+      FAILED: 0,
     };
-    const interval = setInterval(() => {
-      step();
-    }, 450);
-    setTimeout(() => clearInterval(interval), 6000);
+
+    setUploading((prev) =>
+      prev.map((file) =>
+        file.id === fileId
+          ? {
+              ...file,
+              progress: progressMap[status] ?? 0,
+              status:
+                status === "COMPLETED"
+                  ? "done"
+                  : status === "FAILED"
+                    ? "failed"
+                    : "uploading",
+            }
+          : file,
+      ),
+    );
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      uploadedFiles.forEach((file) => {
+        dispatch(fetchUploadStatusThunk(file.fileId));
+
+        if (file.status) {
+          updateUploadProgress(file.fileId, file.status);
+        }
+      });
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [uploadedFiles, dispatch, updateUploadProgress]);
+
+  useEffect(() => {
+    setUploading((prev) => {
+      const existingIds = new Set(prev.map((file) => file.id));
+
+      const newFiles: UploadingFile[] = uploadedFiles
+        .filter((file) => !existingIds.has(file.fileId))
+        .map((file) => ({
+          id: file.fileId,
+          name: file.filename,
+          fileType: file.fileType,
+          progress: 20,
+          status: "uploading",
+        }));
+
+      return [...prev, ...newFiles];
+    });
+  }, [uploadedFiles]);
+
   const handleUpload = () => {
+    console.log("Upload clicked")
     //for image upload
     if (attached.img.length > 0) {
       const imageData = new FormData();

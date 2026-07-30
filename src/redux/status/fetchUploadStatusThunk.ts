@@ -6,7 +6,10 @@ export const fetchUploadStatusThunk = createAsyncThunk(
   async (fileId: string, thunkAPI) => {
     try {
       const response = await uploadStatusApi(fileId);
-      return response;
+      return {
+        fileId,
+        status: response.data.status,
+      }
     } catch (error: any) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "upload status fetching failed",

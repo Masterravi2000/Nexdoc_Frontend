@@ -1,5 +1,12 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { uploadImageThunk, uploadPdfThunk, uploadPptxThunk, uploadTxtThunk, uploadXlsThunk } from "./uploadThunk";
+import {
+  uploadImageThunk,
+  uploadPdfThunk,
+  uploadPptxThunk,
+  uploadTxtThunk,
+  uploadXlsThunk,
+} from "./uploadThunk";
+import { fetchUploadStatusThunk } from "../status/fetchUploadStatusThunk";
 
 export type FileTypeId = "pdf" | "xls" | "ppt" | "txt" | "img";
 
@@ -14,6 +21,8 @@ type AttachedFilesState = Record<FileTypeId, AttachedFile[]>;
 interface UploadFile {
   fileId: string;
   filename: string;
+  fileType: FileTypeId;
+  status?: string;
 }
 
 interface FailedFile {
@@ -33,8 +42,8 @@ interface UploadState {
     loading: boolean;
     success: boolean;
     error: string | null;
-    uploadedFiles: [];
-    failedFiles: [];
+    uploadedFiles: UploadFile[];
+    failedFiles: FailedFile[];
   };
   pptx: {
     loading: boolean;
@@ -47,16 +56,19 @@ interface UploadState {
     loading: boolean;
     success: boolean;
     error: string | null;
-    uploadedFiles: [];
-    failedFiles: [];
+    uploadedFiles: UploadFile[];
+    failedFiles: FailedFile[];
   };
   txt: {
     loading: boolean;
     success: boolean;
     error: string | null;
-    uploadedFiles: [];
-    failedFiles: [];
+    uploadedFiles: UploadFile[];
+    failedFiles: FailedFile[];
   };
+
+  uploadedFiles: UploadFile[];
+
   attached: AttachedFilesState;
 }
 
@@ -103,6 +115,7 @@ const initialState: UploadState = {
     txt: [],
     img: [],
   },
+  uploadedFiles: [],
 };
 
 interface AddFilesPayload {
@@ -153,6 +166,12 @@ const uploadSlice = createSlice({
         state.images.success = true;
         state.images.uploadedFiles = action.payload.uploaded_files;
         state.images.failedFiles = action.payload.failed_files;
+        state.uploadedFiles.push(
+          ...action.payload.uploaded_files.map((file:  UploadFile) => ({
+            ...file,
+            fileType: "img",
+          }))
+        )
       })
       .addCase(uploadImageThunk.rejected, (state, action) => {
         state.images.loading = false;
@@ -169,8 +188,14 @@ const uploadSlice = createSlice({
       .addCase(uploadPdfThunk.fulfilled, (state, action) => {
         state.pdf.loading = false;
         state.pdf.success = true;
-        state.pdf.uploadedFiles = action.payload.data.upload_files;
+        state.pdf.uploadedFiles = action.payload.upload_files;
         state.pdf.failedFiles = action.payload.failed_data;
+        state.uploadedFiles.push(
+          ...action.payload.uploaded_files.map((file:  UploadFile) => ({
+            ...file,
+            fileType: "pdf",
+          }))
+        )
       })
       .addCase(uploadPdfThunk.rejected, (state, action) => {
         state.pdf.loading = false;
@@ -187,8 +212,14 @@ const uploadSlice = createSlice({
       .addCase(uploadPptxThunk.fulfilled, (state, action) => {
         state.pptx.loading = false;
         state.pptx.success = true;
-        state.pptx.uploadedFiles = action.payload.data.upload_files;
+        state.pptx.uploadedFiles = action.payload.upload_files;
         state.pptx.failedFiles = action.payload.failed_data;
+        state.uploadedFiles.push(
+          ...action.payload.uploaded_files.map((file:  UploadFile) => ({
+            ...file,
+            fileType: "ppt",
+          }))
+        )
       })
       .addCase(uploadPptxThunk.rejected, (state, action) => {
         state.pptx.loading = false;
@@ -205,8 +236,14 @@ const uploadSlice = createSlice({
       .addCase(uploadXlsThunk.fulfilled, (state, action) => {
         state.xls.loading = false;
         state.xls.success = true;
-        state.xls.uploadedFiles = action.payload.data.upload_files;
+        state.xls.uploadedFiles = action.payload.upload_files;
         state.xls.failedFiles = action.payload.failed_data;
+        state.uploadedFiles.push(
+          ...action.payload.uploaded_files.map((file:  UploadFile) => ({
+            ...file,
+            fileType: "xls",
+          }))
+        )
       })
       .addCase(uploadXlsThunk.rejected, (state, action) => {
         state.xls.loading = false;
@@ -223,13 +260,29 @@ const uploadSlice = createSlice({
       .addCase(uploadTxtThunk.fulfilled, (state, action) => {
         state.txt.loading = false;
         state.txt.success = true;
-        state.txt.uploadedFiles = action.payload.data.upload_files;
+        state.txt.uploadedFiles = action.payload.upload_files;
         state.txt.failedFiles = action.payload.failed_data;
+        state.uploadedFiles.push(
+          ...action.payload.uploaded_files.map((file:  UploadFile) => ({
+            ...file,
+            fileType: "txt",
+          }))
+        )
       })
       .addCase(uploadTxtThunk.rejected, (state, action) => {
         state.txt.loading = false;
         state.txt.success = false;
         state.txt.error = action.payload as string;
+      })
+
+      //
+      .addCase(fetchUploadStatusThunk.fulfilled, (state, action) => {
+        const file = state.uploadedFiles.find(
+         (f) => f.fileId === action.payload.fileId 
+        )
+        if (file) {
+          file.status = action.payload.status;
+        }
       });
   },
 });

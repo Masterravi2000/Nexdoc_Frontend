@@ -1,11 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 import uploadReducer from "./upload/uploadSlice"
-import statusReducer from "./status/fetchUploadStatusSlice"
 
 export const store = configureStore({
     reducer: {
-        upload: uploadReducer,
-        status: statusReducer
+        upload: uploadReducer
     }
 })
 
