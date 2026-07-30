@@ -188,8 +188,8 @@ const uploadSlice = createSlice({
       .addCase(uploadPdfThunk.fulfilled, (state, action) => {
         state.pdf.loading = false;
         state.pdf.success = true;
-        state.pdf.uploadedFiles = action.payload.upload_files;
-        state.pdf.failedFiles = action.payload.failed_data;
+        state.pdf.uploadedFiles = action.payload.uploaded_files;
+        state.pdf.failedFiles = action.payload.failed_files;
         state.uploadedFiles.push(
           ...action.payload.uploaded_files.map((file:  UploadFile) => ({
             ...file,
@@ -212,8 +212,8 @@ const uploadSlice = createSlice({
       .addCase(uploadPptxThunk.fulfilled, (state, action) => {
         state.pptx.loading = false;
         state.pptx.success = true;
-        state.pptx.uploadedFiles = action.payload.upload_files;
-        state.pptx.failedFiles = action.payload.failed_data;
+        state.pptx.uploadedFiles = action.payload.uploaded_files;
+        state.pptx.failedFiles = action.payload.failed_files;
         state.uploadedFiles.push(
           ...action.payload.uploaded_files.map((file:  UploadFile) => ({
             ...file,
@@ -236,8 +236,8 @@ const uploadSlice = createSlice({
       .addCase(uploadXlsThunk.fulfilled, (state, action) => {
         state.xls.loading = false;
         state.xls.success = true;
-        state.xls.uploadedFiles = action.payload.upload_files;
-        state.xls.failedFiles = action.payload.failed_data;
+        state.xls.uploadedFiles = action.payload.uploaded_files;
+        state.xls.failedFiles = action.payload.failed_files;
         state.uploadedFiles.push(
           ...action.payload.uploaded_files.map((file:  UploadFile) => ({
             ...file,
@@ -260,8 +260,8 @@ const uploadSlice = createSlice({
       .addCase(uploadTxtThunk.fulfilled, (state, action) => {
         state.txt.loading = false;
         state.txt.success = true;
-        state.txt.uploadedFiles = action.payload.upload_files;
-        state.txt.failedFiles = action.payload.failed_data;
+        state.txt.uploadedFiles = action.payload.uploaded_files;
+        state.txt.failedFiles = action.payload.failed_files;
         state.uploadedFiles.push(
           ...action.payload.uploaded_files.map((file:  UploadFile) => ({
             ...file,

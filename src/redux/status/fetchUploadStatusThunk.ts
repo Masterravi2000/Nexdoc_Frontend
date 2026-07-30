@@ -8,7 +8,7 @@ export const fetchUploadStatusThunk = createAsyncThunk(
       const response = await uploadStatusApi(fileId);
       return {
         fileId,
-        status: response.data.status,
+        status: response.status,
       }
     } catch (error: any) {
       return thunkAPI.rejectWithValue(

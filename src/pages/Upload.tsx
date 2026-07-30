@@ -47,6 +47,7 @@ interface FileTypeConfig {
   chipBg: string;
   chipText: string;
   chipDot: string;
+  progressBar: string;
 }
 
 const FILE_TYPE_CONFIGS: FileTypeConfig[] = [
@@ -60,6 +61,7 @@ const FILE_TYPE_CONFIGS: FileTypeConfig[] = [
     chipBg: "bg-red-50",
     chipText: "text-red-900",
     chipDot: "bg-red-300",
+    progressBar: "bg-red-500",
   },
   {
     id: "xls",
@@ -71,6 +73,7 @@ const FILE_TYPE_CONFIGS: FileTypeConfig[] = [
     chipBg: "bg-green-50",
     chipText: "text-green-900",
     chipDot: "bg-green-300",
+    progressBar: "bg-green-500",
   },
   {
     id: "ppt",
@@ -82,6 +85,7 @@ const FILE_TYPE_CONFIGS: FileTypeConfig[] = [
     chipBg: "bg-orange-50",
     chipText: "text-orange-900",
     chipDot: "bg-orange-300",
+    progressBar: "bg-orange-500",
   },
   {
     id: "txt",
@@ -93,6 +97,7 @@ const FILE_TYPE_CONFIGS: FileTypeConfig[] = [
     chipBg: "bg-gray-100",
     chipText: "text-gray-800",
     chipDot: "bg-gray-300",
+    progressBar: "bg-gray-500",
   },
   {
     id: "img",
@@ -104,6 +109,7 @@ const FILE_TYPE_CONFIGS: FileTypeConfig[] = [
     chipBg: "bg-blue-50",
     chipText: "text-blue-900",
     chipDot: "bg-blue-300",
+    progressBar: "bg-blue-500",
   },
 ];
 
@@ -210,13 +216,13 @@ export default function Upload({}: UploadPageProps) {
 
   const updateUploadProgress = useCallback((fileId: string, status: string) => {
     const progressMap: Record<string, number> = {
-      QUEUED: 20,
-      PROCESSING: 40,
-      CHUNKING: 60,
-      EMBEDDING: 80,
-      STORING: 90,
-      COMPLETED: 100,
-      FAILED: 0,
+      queued: 20,
+      processing: 40,
+      chunking: 60,
+      embedding: 80,
+      storing: 90,
+      completed: 100,
+      failed: 0,
     };
 
     setUploading((prev) =>
@@ -226,9 +232,9 @@ export default function Upload({}: UploadPageProps) {
               ...file,
               progress: progressMap[status] ?? 0,
               status:
-                status === "COMPLETED"
+                status === "completed"
                   ? "done"
-                  : status === "FAILED"
+                  : status === "failed"
                     ? "failed"
                     : "uploading",
             }
@@ -240,11 +246,13 @@ export default function Upload({}: UploadPageProps) {
   useEffect(() => {
     const interval = setInterval(() => {
       uploadedFiles.forEach((file) => {
-        dispatch(fetchUploadStatusThunk(file.fileId));
-
         if (file.status) {
           updateUploadProgress(file.fileId, file.status);
         }
+
+        if (file.status === "completed" || file.status === "failed") return;
+
+        dispatch(fetchUploadStatusThunk(file.fileId));
       });
     }, 2000);
 
@@ -265,12 +273,11 @@ export default function Upload({}: UploadPageProps) {
           status: "uploading",
         }));
 
-      return [...prev, ...newFiles];
+      return [...newFiles, ...prev];
     });
   }, [uploadedFiles]);
 
   const handleUpload = () => {
-    console.log("Upload clicked")
     //for image upload
     if (attached.img.length > 0) {
       const imageData = new FormData();
@@ -425,17 +432,17 @@ export default function Upload({}: UploadPageProps) {
         })}
       </div>
 
-      <div className="h-px bg-gray-100" />
+      <div className="h-px bg-gray-100 mt-2" />
 
       {/* Uploading list — vertically scrollable as one unit */}
       <div className="mt-4 flex min-h-0 flex-1 flex-col">
-        <p className="mb-2 text-xs font-semibold text-gray-900">
+        <p className="mb-2 text-md font-semibold text-gray-900">
           Uploading {uploading.length > 0 ? `(${uploading.length})` : ""}
         </p>
-        <div className="flex-1 space-y-2 overflow-y-auto">
+        <div className="flex-1 space-y-2 p-2 overflow-y-auto">
           {uploading.length === 0 && (
-            <p className="py-8 text-center text-xs text-gray-400">
-              Attached files will appear here once you press Upload.
+            <p className="py-8 text-center text-md text-gray-400">
+              Uploading files will appear here.
             </p>
           )}
           {uploading.map((f) => {
@@ -444,25 +451,25 @@ export default function Upload({}: UploadPageProps) {
             return (
               <div
                 key={f.id}
-                className="rounded-lg border border-gray-100 px-3.5 py-2.5"
+                className="rounded-lg border border-gray-100 px-4 py-2.5"
               >
                 <div className="mb-1.5 flex items-center justify-between">
                   <div className="flex min-w-0 items-center gap-2">
                     <Icon
-                      className={`h-3.5 w-3.5 flex-shrink-0 ${config.color}`}
-                      strokeWidth={1.8}
+                      className={`h-8 w-8 flex-shrink-0 ${config.color}`}
+                      strokeWidth={2.5}
                     />
-                    <span className="truncate text-xs text-gray-900">
+                    <span className="truncate text-lg text-gray-900">
                       {f.name}
                     </span>
                   </div>
                   {f.status === "done" ? (
-                    <span className="flex flex-shrink-0 items-center gap-1 text-[11px] font-semibold text-green-600">
+                    <span className="flex flex-shrink-0 items-center gap-1 text-[14px] mr-2 font-semibold text-green-600">
                       <Check className="h-3 w-3" strokeWidth={2.5} />
                       Uploaded
                     </span>
                   ) : (
-                    <span className="flex-shrink-0 text-[11px] text-gray-400">
+                    <span className="flex-shrink-0 text-[14px] text-gray-500">
                       {Math.round(f.progress)}%
                     </span>
                   )}
@@ -470,7 +477,7 @@ export default function Upload({}: UploadPageProps) {
                 {f.status === "uploading" && (
                   <div className="h-1.5 overflow-hidden rounded-full bg-gray-100">
                     <div
-                      className="h-full rounded-full bg-blue-500 transition-all duration-300"
+                      className={`h-full rounded-full transition-all duration-300 ${config.progressBar}`}
                       style={{ width: `${f.progress}%` }}
                     />
                   </div>
