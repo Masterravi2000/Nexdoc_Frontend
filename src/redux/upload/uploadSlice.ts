@@ -26,8 +26,11 @@ interface UploadFile {
 }
 
 interface FailedFile {
+  fileId: string;
   filename: string;
-  reason: string;
+  fileType: FileTypeId;
+  status: string;
+  error: string;
 }
 
 interface UploadState {
@@ -68,6 +71,7 @@ interface UploadState {
   };
 
   uploadedFiles: UploadFile[];
+  failedFiles: FailedFile[];
 
   attached: AttachedFilesState;
 }
@@ -116,6 +120,7 @@ const initialState: UploadState = {
     img: [],
   },
   uploadedFiles: [],
+  failedFiles: [],
 };
 
 interface AddFilesPayload {
@@ -151,6 +156,9 @@ const uploadSlice = createSlice({
         img: [],
       };
     },
+    clearFailedFiles: (state) => {
+      state.failedFiles = [];
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -167,11 +175,20 @@ const uploadSlice = createSlice({
         state.images.uploadedFiles = action.payload.uploaded_files;
         state.images.failedFiles = action.payload.failed_files;
         state.uploadedFiles.push(
-          ...action.payload.uploaded_files.map((file:  UploadFile) => ({
+          ...action.payload.uploaded_files.map((file: UploadFile) => ({
             ...file,
             fileType: "img",
-          }))
-        )
+          })),
+        );
+        state.failedFiles.push(
+          ...action.payload.failed_files.map((file: any) => ({
+            fileId: "",
+            filename: file.filename,
+            fileType: "img",
+            status: "failed",
+            error: file.error,
+          })),
+        );
       })
       .addCase(uploadImageThunk.rejected, (state, action) => {
         state.images.loading = false;
@@ -191,11 +208,20 @@ const uploadSlice = createSlice({
         state.pdf.uploadedFiles = action.payload.uploaded_files;
         state.pdf.failedFiles = action.payload.failed_files;
         state.uploadedFiles.push(
-          ...action.payload.uploaded_files.map((file:  UploadFile) => ({
+          ...action.payload.uploaded_files.map((file: UploadFile) => ({
             ...file,
             fileType: "pdf",
-          }))
-        )
+          })),
+        );
+        state.failedFiles.push(
+          ...action.payload.failed_files.map((file: any) => ({
+            fileId: "",
+            filename: file.filename,
+            fileType: "pdf",
+            status: "failed",
+            error: file.error,
+          })),
+        );
       })
       .addCase(uploadPdfThunk.rejected, (state, action) => {
         state.pdf.loading = false;
@@ -215,11 +241,20 @@ const uploadSlice = createSlice({
         state.pptx.uploadedFiles = action.payload.uploaded_files;
         state.pptx.failedFiles = action.payload.failed_files;
         state.uploadedFiles.push(
-          ...action.payload.uploaded_files.map((file:  UploadFile) => ({
+          ...action.payload.uploaded_files.map((file: UploadFile) => ({
             ...file,
             fileType: "ppt",
-          }))
-        )
+          })),
+        );
+        state.failedFiles.push(
+          ...action.payload.failed_files.map((file: any) => ({
+            fileId: "",
+            filename: file.filename,
+            fileType: "ppt",
+            status: "failed",
+            error: file.error,
+          })),
+        );
       })
       .addCase(uploadPptxThunk.rejected, (state, action) => {
         state.pptx.loading = false;
@@ -239,11 +274,20 @@ const uploadSlice = createSlice({
         state.xls.uploadedFiles = action.payload.uploaded_files;
         state.xls.failedFiles = action.payload.failed_files;
         state.uploadedFiles.push(
-          ...action.payload.uploaded_files.map((file:  UploadFile) => ({
+          ...action.payload.uploaded_files.map((file: UploadFile) => ({
             ...file,
             fileType: "xls",
-          }))
-        )
+          })),
+        );
+        state.failedFiles.push(
+          ...action.payload.failed_files.map((file: any) => ({
+            fileId: "",
+            filename: file.filename,
+            fileType: "xls",
+            status: "failed",
+            error: file.error,
+          })),
+        );
       })
       .addCase(uploadXlsThunk.rejected, (state, action) => {
         state.xls.loading = false;
@@ -263,11 +307,20 @@ const uploadSlice = createSlice({
         state.txt.uploadedFiles = action.payload.uploaded_files;
         state.txt.failedFiles = action.payload.failed_files;
         state.uploadedFiles.push(
-          ...action.payload.uploaded_files.map((file:  UploadFile) => ({
+          ...action.payload.uploaded_files.map((file: UploadFile) => ({
             ...file,
             fileType: "txt",
-          }))
-        )
+          })),
+        );
+        state.failedFiles.push(
+          ...action.payload.failed_files.map((file: any) => ({
+            fileId: "",
+            filename: file.filename,
+            fileType: "txt",
+            status: "failed",
+            error: file.error,
+          })),
+        );
       })
       .addCase(uploadTxtThunk.rejected, (state, action) => {
         state.txt.loading = false;
@@ -275,19 +328,28 @@ const uploadSlice = createSlice({
         state.txt.error = action.payload as string;
       })
 
-      //
+      // slice for managing status
       .addCase(fetchUploadStatusThunk.fulfilled, (state, action) => {
         const file = state.uploadedFiles.find(
-         (f) => f.fileId === action.payload.fileId 
-        )
+          (f) => f.fileId === action.payload.fileId,
+        );
         if (file) {
           file.status = action.payload.status;
+          if (action.payload.status === "failed") {
+            state.failedFiles.push({
+              fileId: action.payload.fileId,
+              filename: action.payload.filename,
+              fileType: file.fileType, // infer from uploadedFiles
+              status: action.payload.status,
+              error: action.payload.error,
+            });
+          }
         }
       });
   },
 });
 
-export const { addAttachedFiles, removeAttachedFile, clearAttachedFiles } =
+export const { addAttachedFiles, removeAttachedFile, clearAttachedFiles, clearFailedFiles } =
   uploadSlice.actions;
 
 export default uploadSlice.reducer;

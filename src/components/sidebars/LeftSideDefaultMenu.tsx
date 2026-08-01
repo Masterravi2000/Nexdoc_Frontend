@@ -113,7 +113,7 @@ export default function LeftSideDefaultMenu({
   };
 
   return (
-    <nav className="flex h-full w-full flex-col bg-gray-50 p-4 py-6">
+    <nav className="flex h-full w-full flex-col overflow-hidden bg-gray-50 p-4 py-6">
       {/* Header */}
       <div className="mb-6 flex items-center justify-between px-3">
         <h2 className="text-[25px] font-bold text-[#4F90E4]">Nexdoc</h2>

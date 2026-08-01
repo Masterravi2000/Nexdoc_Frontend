@@ -15,12 +15,15 @@ import {
   Check,
   type LucideProps,
   TriangleAlert,
+  ArrowRightIcon,
+  ArrowLeft,
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../redux/hook";
 import {
   addAttachedFiles,
   removeAttachedFile,
   clearAttachedFiles,
+  clearFailedFiles,
 } from "../redux/upload/uploadSlice";
 import {
   uploadImageThunk,
@@ -134,6 +137,10 @@ export interface UploadPageProps {
 export default function Upload({}: UploadPageProps) {
   const dispatch = useAppDispatch();
   const { uploadedFiles } = useSelector((state: RootState) => state.upload);
+  const failedFiles = useSelector(
+    (state: RootState) => state.upload.failedFiles,
+  );
+  const [failedFileSection, setFailedFilesSection] = useState(false);
 
   const attached = useAppSelector((state) => state.upload.attached);
 
@@ -278,6 +285,7 @@ export default function Upload({}: UploadPageProps) {
   }, [uploadedFiles]);
 
   const handleUpload = () => {
+    dispatch(clearFailedFiles());
     //for image upload
     if (attached.img.length > 0) {
       const imageData = new FormData();
@@ -321,6 +329,32 @@ export default function Upload({}: UploadPageProps) {
     dispatch(clearAttachedFiles());
   };
 
+  const getFailedFileConfig = (fileType: string) => {
+    switch (fileType) {
+      case "pdf":
+        return { icon: FileText, color: "text-red-500" };
+
+      case "xlsx":
+      case "xls":
+        return { icon: FileSpreadsheet, color: "text-green-600" };
+
+      case "ppt":
+      case "pptx":
+        return { icon: Presentation, color: "text-orange-500" };
+
+      case "jpg":
+      case "jpeg":
+      case "png":
+        return { icon: ImageIcon, color: "text-blue-500" };
+
+      case "txt":
+        return { icon: FileText, color: "text-gray-500" };
+
+      default:
+        return { icon: File, color: "text-gray-500" };
+    }
+  };
+
   return (
     <div className="flex relative h-full w-full flex-col bg-white px-6 py-6">
       {notify === true ? (
@@ -342,7 +376,7 @@ export default function Upload({}: UploadPageProps) {
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <p className="text-lg font-[600] text-gray-900">Upload documents</p>
+          <p className="text-lg font-[600] text-gray-800">Upload documents</p>
           <p className="text-xs text-gray-400">
             Up to 5 files per type &middot; 25 files total
           </p>
@@ -373,10 +407,12 @@ export default function Upload({}: UploadPageProps) {
             files.length >= MAX_PER_TYPE || totalAttached >= MAX_TOTAL;
 
           return (
-            <div key={config.id}>
+            <div key={config.id} className="h-[80px]">
               <div className="mb-2 flex items-center gap-2 text-[12.5px] font-semibold text-gray-900">
                 <Icon className={`h-7 w-7 ${config.color}`} strokeWidth={2} />
-                {config.label}
+                <h1 className="text-gray-700 font-[500] text-[16px]">
+                  {config.label}
+                </h1>
                 <span className="font-normal text-gray-400">
                   &middot; {files.length}/{MAX_PER_TYPE}
                 </span>
@@ -398,7 +434,7 @@ export default function Upload({}: UploadPageProps) {
               />
 
               {/* Individually horizontally scrollable row */}
-              <div className="flex gap-2 ml-1 overflow-x-auto pb-1">
+              <div className="flex gap-2 ml-1 overflow-x-auto overflow-y-hidden pb-1 scrollbar scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-rounded-full scrollbar-track-transparen">
                 {files.map((f) => (
                   <span
                     key={f.id}
@@ -421,7 +457,7 @@ export default function Upload({}: UploadPageProps) {
                   type="button"
                   onClick={() => handleAddClick(config.id)}
                   disabled={atLimit}
-                  className="flex flex-shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg border border-dashed border-gray-300 px-3 py-1.5 text-xs text-gray-400 hover:border-gray-400 hover:text-gray-500 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="flex flex-shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg border border-dashed border-gray-400 px-3 py-1.5 text-xs text-gray-500 hover:border-gray-500 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   <Plus className="h-3 w-3" strokeWidth={2} />
                   Add file
@@ -432,16 +468,91 @@ export default function Upload({}: UploadPageProps) {
         })}
       </div>
 
+      {/* failed file pannel details */}
+      {failedFileSection === true ? (
+        <div className="h-[450px] flex flex-col w-[250px] z-100 bg-red-200 shadow-md rounded-3xl absolute top-27 right-5 p-4 item-center justify-center">
+          {/* Header Section */}
+          <div className="flex flex-row justify-between">
+            <h1 className="text-xl text-red-500 font-[700] ml-1">Failed files</h1>
+            <button
+              onClick={() => setFailedFilesSection(false)}
+              className="rounded-full p-1 bg-red-300 hover:bg-red-400"
+            >
+              <ArrowRightIcon
+                className="h-4 w-7 text-red-600"
+                strokeWidth={3}
+              />
+            </button>
+          </div>
+          {/* body */}
+          <div className="mt-3 flex-1 space-y-2 overflow-y-auto pr-1 scrollbar scrollbar-thin scrollbar-thumb-red-200 scrollbar-track-rounded-full scrollbar-track-transparent">
+            {failedFiles.length === 0 ? (
+              <p className="py-10 text-center text-sm mt-6 text-red-400">
+                No failed files
+              </p>
+            ) : (
+              failedFiles.map((file) => {
+                const { icon: Icon, color } = getFailedFileConfig(
+                  file.fileType,
+                );
+                return (
+                  <div
+                    key={`${file.filename}-${file.fileType}`}
+                    className="rounded-lg p-2.5"
+                  >
+                    <div className="mb-1 flex items-center gap-1.5">
+                      <Icon
+                        className={`h-5 w-5 flex-shrink-0 ${color}`}
+                        strokeWidth={2}
+                      />
+                      <span className="truncate text-[13px] font-medium text-gray-800">
+                        {file.filename}
+                      </span>
+                    </div>
+                    <p className="text-[11.5px] leading-snug text-gray-600">
+                      {file.error}
+                    </p>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="absolute z-100 w-[50px] flex flex-col top-27 right-5 h-[450px] justify-between item-center shadow-md bg-red-200 rounded-full p-2">
+          <button
+            onClick={() => setFailedFilesSection(true)}
+            className="p-2 rounded-full bg-red-300 mt-0.1 hover:bg-red-400"
+          >
+            <ArrowLeft
+              className="text-red-600 w-4 h-4 font-[600]"
+              strokeWidth={3}
+            />
+          </button>
+          <div className="flex h-full w-full flex-col justify-center items-center">
+            <p className="rotate-90 text-red-500 font-[600] text-lg mb-5">
+              Failed
+            </p>
+            <p className="rotate-90 text-red-500 font-[600] text-lg mb-6">
+              Files
+            </p>
+            <p className="rotate-90 text-red-500 font-[600] text-lg mb-6">
+              Pannel
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="h-px bg-gray-100 mt-2" />
 
       {/* Uploading list — vertically scrollable as one unit */}
-      <div className="mt-4 flex min-h-0 flex-1 flex-col">
-        <p className="mb-2 text-md font-semibold text-gray-900">
+      <div className="mt-4 flex flex-1 flex-col">
+        <p className="mb-2 text-md font-semibold text-gray-800">
           Uploading {uploading.length > 0 ? `(${uploading.length})` : ""}
         </p>
-        <div className="flex-1 space-y-2 p-2 overflow-y-auto">
+        <div className="flex-1 overflow-x-auto space-y-2 p-2">
           {uploading.length === 0 && (
-            <p className="py-8 text-center text-md text-gray-400">
+            <p className="py-8 text-center text-md mt-20 text-gray-400">
               Uploading files will appear here.
             </p>
           )}
@@ -467,6 +578,11 @@ export default function Upload({}: UploadPageProps) {
                     <span className="flex flex-shrink-0 items-center gap-1 text-[14px] mr-2 font-semibold text-green-600">
                       <Check className="h-3 w-3" strokeWidth={2.5} />
                       Uploaded
+                    </span>
+                  ) : f.status === "failed" ? (
+                    <span className="flex items-center gap-1 text-[14px] mr-2 font-semibold text-red-600">
+                      <X className="h-3 w-3" strokeWidth={2.5} />
+                      Failed
                     </span>
                   ) : (
                     <span className="flex-shrink-0 text-[14px] text-gray-500">

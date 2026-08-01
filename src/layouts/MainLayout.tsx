@@ -3,11 +3,11 @@ import LeftSideDefaultMenu from "../components/sidebars/LeftSideDefaultMenu";
 
 function MainLayout() {
   return (
-    <div className="flex min-h-screen flex-row">
-      <div className="w-1/7">
+    <div className="flex h-screen">
+      <div className="h-screen w-1/7 flex-shrink-0">
         <LeftSideDefaultMenu />
       </div>
-      <main className="flex-1">
+      <main className="h-screen flex-1 overflow-y-auto overflow-x-hidden">
         <Outlet />
       </main>
     </div>
