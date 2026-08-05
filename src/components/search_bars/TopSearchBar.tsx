@@ -55,7 +55,7 @@ export default function TopSearchBar({
   };
 
   return (
-    <div className="flex w-full items-center gap-3">
+    <div className="flex w-full items-center gap-4">
       <form
         onSubmit={handleSubmit}
         className="relative flex h-14 flex-1 items-center rounded-full bg-white pl-5 pr-4"

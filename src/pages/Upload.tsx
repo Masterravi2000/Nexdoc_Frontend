@@ -379,7 +379,7 @@ export default function Upload({}: UploadPageProps) {
       ) : null}
 
       {/* Header */}
-      <div className=" flex h-[85px] px-6 rounded-3xl bg-white items-center justify-between">
+      <div className=" flex py-5 px-6 rounded-3xl bg-white items-center justify-between">
         <div className="flex flex-col">
           <p className="text-lg font-[700] text-gray-800">Upload documents</p>
           <p className="text-xs text-gray-600 ml-0.5">
@@ -512,11 +512,11 @@ export default function Upload({}: UploadPageProps) {
                             className={`h-5 w-5 flex-shrink-0 ${color}`}
                             strokeWidth={2}
                           />
-                          <span className="truncate text-[13px] font-medium text-gray-800">
+                          <span className="truncate text-[14px] font-medium text-gray-800">
                             {file.filename}
                           </span>
                         </div>
-                        <p className="text-[11.5px] leading-snug text-gray-600">
+                        <p className="text-[11.5px] leading-snug text-gray-800">
                           {file.error}
                         </p>
                       </div>
@@ -553,11 +553,11 @@ export default function Upload({}: UploadPageProps) {
       </div>
 
       {/* Uploading list — vertically scrollable as one unit */}
-      <div className="flex flex-1 flex-col bg-white rounded-3xl p-5">
+      <div className="flex min-h-0 flex-1 flex-col bg-white rounded-3xl p-5 ">
         <p className="mb-2 text-md font-semibold text-gray-900">
           Uploading {uploading.length > 0 ? `(${uploading.length})` : ""}
         </p>
-        <div className="flex-1 overflow-x-auto space-y-2 p-2">
+        <div className="flex-1 overflow-x-auto space-y-2 p-2 scrollbar scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-rounded-full scrollbar-track-transparen">
           {uploading.length === 0 && (
             <p className="text-center mt-14 text-md self-center text-gray-400">
               Uploading files will appear here.

@@ -58,8 +58,8 @@ function RowButton({
     <button
       type="button"
       onClick={onClick}
-      className={`flex w-full items-center gap-4.5 rounded-full px-3 py-2 text-left text-[15px] transition-colors
-        ${active ? "bg-white" : "hover:bg-gray-100"}`}
+      className={`flex w-full items-center gap-5 rounded-full px-3 py-2 text-left text-[15px] transition-colors
+        ${active ? "bg-gray-200" : "hover:bg-gray-100"}`}
     >
       {dotColor ? (
         <span
@@ -117,12 +117,12 @@ export default function LeftSideDefaultMenu({
   };
 
   return (
-    <div className="flex h-full w-full flex-col bg-gray-200 p-3 py-4 ">
-      <nav className="flex h-full w-full flex-col rounded-2xl p-4">
+    <div className="flex h-full w-full gap-5 flex-col bg-gray-200 pt-5 pl-5 pb-7">
+      <nav className="flex h-full w-full bg-white flex-col rounded-3xl p-4">
         {/* Header */}
-        <div className="mb-8 mr-4 mt-1 flex items-center gap-3 flex flex-row">
-          <FileSearchCornerIcon className="w-7 h-7 text-gray-900 font-[700]"/>
-          <h2 className="text-[25px] font-bold text-gray-900">Nexdoc</h2>
+        <div className="mb-8 mt-1 p-2 flex items-center gap-3 flex flex-row">
+          <FileSearchCornerIcon className="w-6 h-6 text-gray-800 font-[800]" />
+          <h2 className="text-[20px] font-[500] text-gray-800">Nexdoc</h2>
         </div>
 
         <div className="flex-1 overflow-y-auto">
@@ -139,7 +139,9 @@ export default function LeftSideDefaultMenu({
             ))}
           </div>
         </div>
+      </nav>
 
+      <nav className="flex w-full bg-white flex-col rounded-3xl p-4">
         <button
           type="button"
           onClick={() => onQuickAccessDrop()}
@@ -148,9 +150,9 @@ export default function LeftSideDefaultMenu({
             e.preventDefault();
             onQuickAccessDrop(e);
           }}
-          className="mt-6 flex w-full hover:border-gray-300"
+          className="mt-1 flex w-full hover:border-gray-300"
         >
-          <div className="flex flex-col gap-2">
+          <div className="flex w-full flex-col gap-2">
             {TAGS.map((tag) => (
               <RowButton
                 key={tag.id}
