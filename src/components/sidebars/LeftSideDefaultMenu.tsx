@@ -7,6 +7,7 @@ import {
   type LucideProps,
   Upload,
   Search,
+  FileSearchCornerIcon,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -26,9 +27,9 @@ interface TagItem {
 
 const NAV_ITEMS: NavItem[] = [
   { id: "home", label: "Home", icon: Home },
+  { id: "search", label: "Search", icon: Search },
   { id: "recents", label: "Recents", icon: Clock },
   { id: "upload", label: "Upload", icon: Upload },
-  { id: "search", label: "Search", icon: Search },
 ];
 
 const TAGS: TagItem[] = [
@@ -57,8 +58,8 @@ function RowButton({
     <button
       type="button"
       onClick={onClick}
-      className={`flex w-full items-center gap-4.5 rounded-lg px-3 py-2 text-left text-[14px] transition-colors
-        ${active ? "bg-white font-semibold text-gray-900" : "text-gray-800 hover:bg-gray-100"}`}
+      className={`flex w-full items-center gap-4.5 rounded-full px-3 py-2 text-left text-[15px] transition-colors
+        ${active ? "bg-white" : "hover:bg-gray-100"}`}
     >
       {dotColor ? (
         <span
@@ -66,11 +67,15 @@ function RowButton({
         />
       ) : Icon ? (
         <Icon
-          className={`h-[22px] w-[22px] flex-shrink-0 text-gray-500 ${iconClassName}`}
-          strokeWidth={1.8}
+          className={`h-[20px] w-[20px] flex-shrink-0 ${active ? "text-gray-800" : "text-gray-800"} ${iconClassName}`}
+          strokeWidth={2.5}
         />
       ) : null}
-      <span className="truncate text-[16px]">{label}</span>
+      <span
+        className={`truncate font-[500]  ${active ? "text-gray-800" : "text-gray-800 "} text-[15px]`}
+      >
+        {label}
+      </span>
     </button>
   );
 }
@@ -84,7 +89,6 @@ export interface LeftSideDefaultMenuProps {
 }
 
 export default function LeftSideDefaultMenu({
-  onNavigate = () => {},
   onSelectTag = () => {},
   onQuickAccessDrop = () => {},
 }: LeftSideDefaultMenuProps) {
@@ -102,8 +106,8 @@ export default function LeftSideDefaultMenu({
       navigate("/upload");
     }
     if (label === "Search") {
-      setActiveNav("search")
-      navigate("/search")
+      setActiveNav("search");
+      navigate("/search");
     }
   };
 
@@ -113,52 +117,52 @@ export default function LeftSideDefaultMenu({
   };
 
   return (
-    <nav className="flex h-full w-full flex-col overflow-hidden bg-gray-50 p-4 py-6">
-      {/* Header */}
-      <div className="mb-6 flex items-center justify-between px-3">
-        <h2 className="text-[25px] font-bold text-[#4F90E4]">Nexdoc</h2>
-      </div>
-
-      <div className="flex-1 overflow-y-auto">
-        {/* Primary nav */}
-        <div className="flex flex-col gap-1.5">
-          {NAV_ITEMS.map((item) => (
-            <RowButton
-              key={item.id}
-              icon={item.icon}
-              label={item.label}
-              active={activeNav === item.id}
-              onClick={() => handleNavClick(item.label)}
-            />
-          ))}
+    <div className="flex h-full w-full flex-col bg-gray-200 p-3 py-4 ">
+      <nav className="flex h-full w-full flex-col rounded-2xl p-4">
+        {/* Header */}
+        <div className="mb-8 mr-4 mt-1 flex items-center gap-3 flex flex-row">
+          <FileSearchCornerIcon className="w-7 h-7 text-gray-900 font-[700]"/>
+          <h2 className="text-[25px] font-bold text-gray-900">Nexdoc</h2>
         </div>
-      </div>
 
-      <div className="w-full h-[1px] bg-gray-300" />
-
-      {/* Quick access */}
-      <button
-        type="button"
-        onClick={() => onQuickAccessDrop()}
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={(e) => {
-          e.preventDefault();
-          onQuickAccessDrop(e);
-        }}
-        className="mt-6 flex w-full hover:border-gray-300"
-      >
-        <div className="flex flex-col gap-2">
-          {TAGS.map((tag) => (
-            <RowButton
-              key={tag.id}
-              icon={tag.icon}
-              label={tag.label}
-              active={activeTag === tag.id}
-              onClick={() => handleTagClick(tag.id)}
-            />
-          ))}
+        <div className="flex-1 overflow-y-auto">
+          {/* Primary nav */}
+          <div className="flex flex-col gap-2.5">
+            {NAV_ITEMS.map((item) => (
+              <RowButton
+                key={item.id}
+                icon={item.icon}
+                label={item.label}
+                active={activeNav === item.id}
+                onClick={() => handleNavClick(item.label)}
+              />
+            ))}
+          </div>
         </div>
-      </button>
-    </nav>
+
+        <button
+          type="button"
+          onClick={() => onQuickAccessDrop()}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            onQuickAccessDrop(e);
+          }}
+          className="mt-6 flex w-full hover:border-gray-300"
+        >
+          <div className="flex flex-col gap-2">
+            {TAGS.map((tag) => (
+              <RowButton
+                key={tag.id}
+                icon={tag.icon}
+                label={tag.label}
+                active={activeTag === tag.id}
+                onClick={() => handleTagClick(tag.id)}
+              />
+            ))}
+          </div>
+        </button>
+      </nav>
+    </div>
   );
 }

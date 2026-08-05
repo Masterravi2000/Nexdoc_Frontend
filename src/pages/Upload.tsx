@@ -291,6 +291,7 @@ export default function Upload({}: UploadPageProps) {
       const imageData = new FormData();
       attached.img.forEach((file) => {
         imageData.append("files", file.file);
+        imageData.append("last_modified", String(file.file.lastModified));
       });
       dispatch(uploadImageThunk(imageData));
     }
@@ -299,6 +300,7 @@ export default function Upload({}: UploadPageProps) {
       const pdfData = new FormData();
       attached.pdf.forEach((file) => {
         pdfData.append("files", file.file);
+        pdfData.append("last_modified", String(file.file.lastModified));
       });
       dispatch(uploadPdfThunk(pdfData));
     }
@@ -307,6 +309,7 @@ export default function Upload({}: UploadPageProps) {
       const pptData = new FormData();
       attached.ppt.forEach((file) => {
         pptData.append("files", file.file);
+        pptData.append("last_modified", String(file.file.lastModified));
       });
       dispatch(uploadPptxThunk(pptData));
     }
@@ -315,6 +318,7 @@ export default function Upload({}: UploadPageProps) {
       const xlsData = new FormData();
       attached.xls.forEach((file) => {
         xlsData.append("files", file.file);
+        xlsData.append("last_modified", String(file.file.lastModified));
       });
       dispatch(uploadXlsThunk(xlsData));
     }
@@ -323,6 +327,7 @@ export default function Upload({}: UploadPageProps) {
       const txtData = new FormData();
       attached.txt.forEach((file) => {
         txtData.append("files", file.file);
+        txtData.append("last_modified", String(file.file.lastModified));
       });
       dispatch(uploadTxtThunk(txtData));
     }
@@ -356,7 +361,7 @@ export default function Upload({}: UploadPageProps) {
   };
 
   return (
-    <div className="flex relative h-full w-full flex-col bg-white px-6 py-6">
+    <div className="flex h-full gap-4 w-full flex-col bg-gray-200 p-6">
       {notify === true ? (
         <div className="flex absolute shadow-md px-2.5 self-center flex-row align-center justify-between w-[380px] py-2 rounded-xl bg-red-200">
           <div className="flex flex-row gap-3">
@@ -374,15 +379,15 @@ export default function Upload({}: UploadPageProps) {
       ) : null}
 
       {/* Header */}
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          <p className="text-lg font-[600] text-gray-800">Upload documents</p>
-          <p className="text-xs text-gray-400">
+      <div className=" flex h-[85px] px-6 rounded-3xl bg-white items-center justify-between">
+        <div className="flex flex-col">
+          <p className="text-lg font-[700] text-gray-800">Upload documents</p>
+          <p className="text-xs text-gray-600 ml-0.5">
             Up to 5 files per type &middot; 25 files total
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <span className="rounded-full bg-gray-100 px-4 py-2 text-sm text-gray-700">
+        <div className="flex flex-row items-center gap-3">
+          <span className="rounded-full bg-gray-200 px-4 py-2 text-sm font-[500] text-gray-700">
             {totalAttached} / {MAX_TOTAL} attached
           </span>
           <button
@@ -396,163 +401,165 @@ export default function Upload({}: UploadPageProps) {
         </div>
       </div>
 
-      <div className="h-px bg-gray-100" />
+      <div className="flex min-w-0 flex-row gap-4 overflow-hidden">
+        {/* Attach sections — each independently horizontally scrollable */}
+        <div className="min-w-0 flex-1 overflow-hidden bg-white gap-4 px-6 py-7 rounded-3xl">
+          {FILE_TYPE_CONFIGS.map((config) => {
+            const Icon = config.icon;
+            const files = attached[config.id];
+            const atLimit =
+              files.length >= MAX_PER_TYPE || totalAttached >= MAX_TOTAL;
 
-      {/* Attach sections — each independently horizontally scrollable */}
-      <div className="flex flex-col gap-4 py-4">
-        {FILE_TYPE_CONFIGS.map((config) => {
-          const Icon = config.icon;
-          const files = attached[config.id];
-          const atLimit =
-            files.length >= MAX_PER_TYPE || totalAttached >= MAX_TOTAL;
-
-          return (
-            <div key={config.id} className="h-[80px]">
-              <div className="mb-2 flex items-center gap-2 text-[12.5px] font-semibold text-gray-900">
-                <Icon className={`h-7 w-7 ${config.color}`} strokeWidth={2} />
-                <h1 className="text-gray-700 font-[500] text-[16px]">
-                  {config.label}
-                </h1>
-                <span className="font-normal text-gray-400">
-                  &middot; {files.length}/{MAX_PER_TYPE}
-                </span>
-              </div>
-
-              {/* Hidden input lives outside the scrollable row so it's never remounted */}
-              <input
-                ref={(el) => {
-                  fileInputRefs.current[config.id] = el;
-                }}
-                type="file"
-                multiple
-                accept={config.accept}
-                className="hidden"
-                onChange={(e) => {
-                  handleFilesSelected(config.id, e.target.files);
-                  e.target.value = "";
-                }}
-              />
-
-              {/* Individually horizontally scrollable row */}
-              <div className="flex gap-2 ml-1 overflow-x-auto overflow-y-hidden pb-1 scrollbar scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-rounded-full scrollbar-track-transparen">
-                {files.map((f) => (
-                  <span
-                    key={f.id}
-                    className={`flex flex-shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg ${config.chipBg} py-1.5 pl-2.5 pr-1.5 text-xs ${config.chipText}`}
-                  >
-                    {f.name}
-                    <button
-                      type="button"
-                      onClick={() => handleRemove(config.id, f.id)}
-                      aria-label={`Remove ${f.name}`}
-                      className={`flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full ${config.chipDot} text-white hover:opacity-80`}
-                    >
-                      <X className="h-2.5 w-2.5" strokeWidth={2.5} />
-                    </button>
+            return (
+              <div key={config.id} className="h-[80px]">
+                <div className="mb-2 flex items-center gap-2 text-[12.5px] font-semibold text-gray-900">
+                  <Icon className={`h-7 w-7 ${config.color}`} strokeWidth={2} />
+                  <h1 className="text-gray-900 font-[500] text-[17px]">
+                    {config.label}
+                  </h1>
+                  <span className="font-normal text-gray-700">
+                    &middot; {files.length}/{MAX_PER_TYPE}
                   </span>
-                ))}
+                </div>
 
+                {/* Hidden input lives outside the scrollable row so it's never remounted */}
+                <input
+                  ref={(el) => {
+                    fileInputRefs.current[config.id] = el;
+                  }}
+                  type="file"
+                  multiple
+                  accept={config.accept}
+                  className="hidden"
+                  onChange={(e) => {
+                    handleFilesSelected(config.id, e.target.files);
+                    e.target.value = "";
+                  }}
+                />
+
+                {/* Individually horizontally scrollable row */}
+                <div className="flex gap-2 ml-1 min-w-0 overflow-x-auto overflow-y-hidden pb-1 scrollbar scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-rounded-full scrollbar-track-transparen">
+                  {files.map((f) => (
+                    <span
+                      key={f.id}
+                      className={`flex flex-shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg ${config.chipBg} py-1.5 pl-2.5 pr-1.5 text-xs ${config.chipText}`}
+                    >
+                      {f.name}
+                      <button
+                        type="button"
+                        onClick={() => handleRemove(config.id, f.id)}
+                        aria-label={`Remove ${f.name}`}
+                        className={`flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full ${config.chipDot} text-white hover:opacity-80`}
+                      >
+                        <X className="h-2.5 w-2.5" strokeWidth={2.5} />
+                      </button>
+                    </span>
+                  ))}
+
+                  <button
+                    key="add-file-button"
+                    type="button"
+                    onClick={() => handleAddClick(config.id)}
+                    disabled={atLimit}
+                    className="flex flex-shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg border border-dashed border-gray-500 px-5 py-1.5 text-xs text-gray-500 hover:border-gray-500 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    <Plus className="h-3 w-3" strokeWidth={2} />
+                    Add file
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* failed file pannel details */}
+        {failedFileSection === true ? (
+          <div className="h-full">
+            <div className="h-full flex flex-srink-0 flex-col w-[250px] z-100 bg-red-200 rounded-3xl p-4 item-center justify-center">
+              {/* Header Section */}
+              <div className="flex flex-row justify-between">
+                <h1 className="text-xl text-red-500 font-[700] ml-1">
+                  Failed files
+                </h1>
                 <button
-                  key="add-file-button"
-                  type="button"
-                  onClick={() => handleAddClick(config.id)}
-                  disabled={atLimit}
-                  className="flex flex-shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg border border-dashed border-gray-400 px-3 py-1.5 text-xs text-gray-500 hover:border-gray-500 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-40"
+                  onClick={() => setFailedFilesSection(false)}
+                  className="rounded-full p-1 bg-red-300 hover:bg-red-400"
                 >
-                  <Plus className="h-3 w-3" strokeWidth={2} />
-                  Add file
+                  <ArrowRightIcon
+                    className="h-4 w-7 text-red-600"
+                    strokeWidth={3}
+                  />
                 </button>
               </div>
+              {/* body */}
+              <div className="mt-3 flex-1 space-y-2 overflow-y-auto pr-1 scrollbar scrollbar-thin scrollbar-thumb-red-200 scrollbar-track-rounded-full scrollbar-track-transparent">
+                {failedFiles.length === 0 ? (
+                  <p className="py-10 text-center text-sm mt-6 text-red-400">
+                    No failed file
+                  </p>
+                ) : (
+                  failedFiles.map((file) => {
+                    const { icon: Icon, color } = getFailedFileConfig(
+                      file.fileType,
+                    );
+                    return (
+                      <div
+                        key={`${file.filename}-${file.fileType}`}
+                        className="rounded-lg p-2.5"
+                      >
+                        <div className="mb-1 flex items-center gap-1.5">
+                          <Icon
+                            className={`h-5 w-5 flex-shrink-0 ${color}`}
+                            strokeWidth={2}
+                          />
+                          <span className="truncate text-[13px] font-medium text-gray-800">
+                            {file.filename}
+                          </span>
+                        </div>
+                        <p className="text-[11.5px] leading-snug text-gray-600">
+                          {file.error}
+                        </p>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
             </div>
-          );
-        })}
-      </div>
-
-      {/* failed file pannel details */}
-      {failedFileSection === true ? (
-        <div className="h-[450px] flex flex-col w-[250px] z-100 bg-red-200 shadow-md rounded-3xl absolute top-27 right-5 p-4 item-center justify-center">
-          {/* Header Section */}
-          <div className="flex flex-row justify-between">
-            <h1 className="text-xl text-red-500 font-[700] ml-1">Failed files</h1>
+          </div>
+        ) : (
+          <div className="z-100 w-[50px] flex-shrink-0 flex flex-col right-5 h-[450px] justify-between item-center bg-red-200 rounded-full p-2">
             <button
-              onClick={() => setFailedFilesSection(false)}
-              className="rounded-full p-1 bg-red-300 hover:bg-red-400"
+              onClick={() => setFailedFilesSection(true)}
+              className="p-2 rounded-full bg-red-300 mt-0.1 hover:bg-red-400"
             >
-              <ArrowRightIcon
-                className="h-4 w-7 text-red-600"
+              <ArrowLeft
+                className="text-red-600 w-4 h-4 font-[600]"
                 strokeWidth={3}
               />
             </button>
-          </div>
-          {/* body */}
-          <div className="mt-3 flex-1 space-y-2 overflow-y-auto pr-1 scrollbar scrollbar-thin scrollbar-thumb-red-200 scrollbar-track-rounded-full scrollbar-track-transparent">
-            {failedFiles.length === 0 ? (
-              <p className="py-10 text-center text-sm mt-6 text-red-400">
-                No failed files
+            <div className="flex h-full w-full flex-col justify-center items-center">
+              <p className="rotate-90 text-red-500 font-[600] text-lg mb-5">
+                Failed
               </p>
-            ) : (
-              failedFiles.map((file) => {
-                const { icon: Icon, color } = getFailedFileConfig(
-                  file.fileType,
-                );
-                return (
-                  <div
-                    key={`${file.filename}-${file.fileType}`}
-                    className="rounded-lg p-2.5"
-                  >
-                    <div className="mb-1 flex items-center gap-1.5">
-                      <Icon
-                        className={`h-5 w-5 flex-shrink-0 ${color}`}
-                        strokeWidth={2}
-                      />
-                      <span className="truncate text-[13px] font-medium text-gray-800">
-                        {file.filename}
-                      </span>
-                    </div>
-                    <p className="text-[11.5px] leading-snug text-gray-600">
-                      {file.error}
-                    </p>
-                  </div>
-                );
-              })
-            )}
+              <p className="rotate-90 text-red-500 font-[600] text-lg mb-6">
+                Files
+              </p>
+              <p className="rotate-90 text-red-500 font-[600] text-lg mb-6">
+                Pannel
+              </p>
+            </div>
           </div>
-        </div>
-      ) : (
-        <div className="absolute z-100 w-[50px] flex flex-col top-27 right-5 h-[450px] justify-between item-center shadow-md bg-red-200 rounded-full p-2">
-          <button
-            onClick={() => setFailedFilesSection(true)}
-            className="p-2 rounded-full bg-red-300 mt-0.1 hover:bg-red-400"
-          >
-            <ArrowLeft
-              className="text-red-600 w-4 h-4 font-[600]"
-              strokeWidth={3}
-            />
-          </button>
-          <div className="flex h-full w-full flex-col justify-center items-center">
-            <p className="rotate-90 text-red-500 font-[600] text-lg mb-5">
-              Failed
-            </p>
-            <p className="rotate-90 text-red-500 font-[600] text-lg mb-6">
-              Files
-            </p>
-            <p className="rotate-90 text-red-500 font-[600] text-lg mb-6">
-              Pannel
-            </p>
-          </div>
-        </div>
-      )}
-
-      <div className="h-px bg-gray-100 mt-2" />
+        )}
+      </div>
 
       {/* Uploading list — vertically scrollable as one unit */}
-      <div className="mt-4 flex flex-1 flex-col">
-        <p className="mb-2 text-md font-semibold text-gray-800">
+      <div className="flex flex-1 flex-col bg-white rounded-3xl p-5">
+        <p className="mb-2 text-md font-semibold text-gray-900">
           Uploading {uploading.length > 0 ? `(${uploading.length})` : ""}
         </p>
         <div className="flex-1 overflow-x-auto space-y-2 p-2">
           {uploading.length === 0 && (
-            <p className="py-8 text-center text-md mt-20 text-gray-400">
+            <p className="text-center mt-14 text-md self-center text-gray-400">
               Uploading files will appear here.
             </p>
           )}

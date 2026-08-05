@@ -1,5 +1,7 @@
-import { useState, useRef } from "react";
-import { Search, X, MoreHorizontal } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Search, X } from "lucide-react";
+import searchApiThunk from "../../redux/search/searchThunk";
+import { useAppDispatch } from "../../redux/hook";
 
 export interface SearchHeaderSectionProps {
   initialQuery?: string;
@@ -17,12 +19,25 @@ export default function TopSearchBar({
   onSubmit = () => {},
   onOpenMore = () => {},
 }: SearchHeaderSectionProps) {
+  const dispatch = useAppDispatch();
+
   const [query, setQuery] = useState(initialQuery);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Debounce search
+  useEffect(() => {
+    const trimedQuery = query.trim();
+    if (!trimedQuery) return;
+    const debounceTimer = setTimeout(() => {
+      dispatch(searchApiThunk(trimedQuery));
+    }, 200);
+    return () => clearTimeout(debounceTimer);
+  },[query, dispatch])
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-    onSearchChange(e.target.value);
+    const newQuery = e.target.value;
+    setQuery(newQuery);
+    onSearchChange(newQuery);
   };
 
   const handleClear = () => {
@@ -33,16 +48,19 @@ export default function TopSearchBar({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSubmit(query);
+    const trimmedQuery = query.trim();
+    if (!trimmedQuery) return;
+    dispatch(searchApiThunk(trimmedQuery));
+    onSubmit(trimmedQuery)
   };
 
   return (
-    <div className="flex w-full items-center gap-10">
+    <div className="flex w-full items-center gap-3">
       <form
         onSubmit={handleSubmit}
-        className="relative flex h-14 flex-1 items-center rounded-xl border border-gray-100 bg-white pl-5 pr-4 shadow-sm"
+        className="relative flex h-14 flex-1 items-center rounded-full bg-white pl-5 pr-4"
       >
-        <Search className="h-5 w-5 flex-shrink-0 text-gray-400" strokeWidth={1.8} />
+        <Search className="h-5 w-5 flex-shrink-0 text-gray-400" strokeWidth={3} />
         <input
           ref={inputRef}
           type="text"
@@ -67,9 +85,9 @@ export default function TopSearchBar({
         type="button"
         onClick={onOpenMore}
         aria-label="More options"
-        className="flex px-6 py-4 mr-4 rounded-1xl flex-shrink-0 items-center justify-center rounded-full border border-gray-100 bg-white shadow-sm hover:bg-gray-50"
+        className="flex px-8 py-4 mr-4 flex-shrink-0 items-center justify-center rounded-full bg-white hover:bg-gray-50"
       >
-        <h1 className="text-md text-black font-[400]">Nex Ai</h1>
+        <h1 className="text-md text-gray-700 font-[500]">Nex Ai</h1>
       </button>
     </div>
   );

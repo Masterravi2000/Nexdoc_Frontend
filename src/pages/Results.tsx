@@ -6,6 +6,9 @@ import {
   Image as ImageIcon,
   File as FileIcon,
   type LucideProps,
+  BoxSelect,
+  DownloadCloud,
+  File,
 } from "lucide-react";
 
 type IconType = ComponentType<LucideProps>;
@@ -29,65 +32,65 @@ interface FileTypeStyle {
 }
 
 const FILE_TYPE_STYLES: Record<string, FileTypeStyle> = {
-  pdf: { icon: FileText, color: "text-red-500", bg: "bg-red-50", label: "PDF" },
+  pdf: { icon: FileText, color: "text-red-500", bg: "bg-red-200", label: "PDF" },
   pptx: {
     icon: Presentation,
     color: "text-orange-500",
-    bg: "bg-orange-50",
+    bg: "bg-orange-200",
     label: "PPTX",
   },
   ppt: {
     icon: Presentation,
     color: "text-orange-500",
-    bg: "bg-orange-50",
+    bg: "bg-orange-200",
     label: "PPT",
   },
   xlsx: {
     icon: FileSpreadsheet,
     color: "text-green-600",
-    bg: "bg-green-50",
+    bg: "bg-green-200",
     label: "XLSX",
   },
   xls: {
     icon: FileSpreadsheet,
     color: "text-green-600",
-    bg: "bg-green-50",
+    bg: "bg-green-200",
     label: "XLS",
   },
   docx: {
     icon: FileText,
     color: "text-blue-500",
-    bg: "bg-blue-50",
+    bg: "bg-blue-200",
     label: "DOCX",
   },
   doc: {
     icon: FileText,
     color: "text-blue-500",
-    bg: "bg-blue-50",
+    bg: "bg-blue-200",
     label: "DOC",
   },
   txt: {
     icon: FileText,
     color: "text-gray-500",
-    bg: "bg-gray-100",
+    bg: "bg-gray-200",
     label: "TXT",
   },
   jpg: {
     icon: ImageIcon,
     color: "text-blue-500",
-    bg: "bg-blue-50",
+    bg: "bg-blue-200",
     label: "JPG",
   },
   jpeg: {
     icon: ImageIcon,
     color: "text-blue-500",
-    bg: "bg-blue-50",
+    bg: "bg-blue-200",
     label: "JPEG",
   },
   png: {
     icon: ImageIcon,
     color: "text-blue-500",
-    bg: "bg-blue-50",
+    bg: "bg-blue-200",
     label: "PNG",
   },
 };
@@ -126,7 +129,7 @@ export default function Result({
   results = [],
   selectedIndex: controlledIndex,
   onSelectResult = () => {},
-  emptyMessage = "No results found.",
+  emptyMessage = "No results found. Search something valid for seeing the result here",
 }: SearchResultsProps) {
   const [internalIndex, setInternalIndex] = useState<number | null>(
     results.length > 0 ? 0 : null,
@@ -141,24 +144,29 @@ export default function Result({
 
   if (results.length === 0) {
     return (
-      <div className="flex h-full w-full items-center justify-center py-16 text-sm text-gray-400">
-        {emptyMessage}
+      <div className="flex h-full w-full items-center justify-center py-16">
+        <div className="flex flex-col justify-center items-center gap-3">
+          <File className="h-12 w-12 text-[#C0C0C0]" />
+          <p className="w-[200px] text-[#C3C3C3] text-[15px] text-center">
+            {emptyMessage}
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="flex w-full flex-col overflow-hidden">
-      <div className="grid mb-5 rounded-lg grid-cols-[1fr_95px] items-center bg-gray-50 px-7 py-2">
+      <div className="rounded-t-full flex flex-row justify-between items-center px-7 py-6">
         <span className="text-[11px] uppercase tracking-wide text-gray-400">
           Match
         </span>
-        <span className="text-[11px] uppercase tracking-wide text-gray-400">
+        <span className="text-[11px] uppercase tracking-wide mr-2 text-gray-400">
           Extension
         </span>
       </div>
 
-      <ul className="flex flex-col gap-5 pr-4">
+      <ul className="flex flex-col gap-5 px-6">
         {results.map((result, index) => {
           const style = getFileTypeStyle(result.file_type);
           const Icon = style.icon;
@@ -170,8 +178,8 @@ export default function Result({
               <button
                 type="button"
                 onClick={() => handleSelect(result, index)}
-                className={`grid w-full grid-cols-[1fr_65px] items-center p-4 py-6 border rounded-2xl text-left transition-colors ${
-                  isSelected ? "border-[#76AEF6]" : "border-gray-200 hover:bg-gray-50"
+                className={`grid w-full grid-cols-[1fr_65px] items-center p-4 py-6 rounded-3xl text-left transition-colors ${
+                  isSelected ? "bg-[#EBEBEB]" : "hover:bg-gray-50"
                 }`}
               >
                 <div className="flex min-w-0 items-start gap-3">
@@ -179,21 +187,23 @@ export default function Result({
                     className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full ${style.bg}`}
                   >
                     <Icon
-                      className={`h-[18px] w-[18px] ${style.color}`}
-                      strokeWidth={1.8}
+                      className={`h-[21px] w-[21px] ${style.color}`}
+                      strokeWidth={2}
                     />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-lg leading-snug font-[400] text-gray-800">
+                    <p className="text-[15px] leading-snug font-[600] text-gray-900">
                       {result.content}
                     </p>
-                    <p className="truncate mt-1 text-xs text-gray-500">
+                    <p className="truncate mt-1 text-sm text-gray-700">
                       {result.file_name}
                       {location ? ` \u00b7 ${location}` : ""}
                     </p>
                   </div>
                 </div>
-                <span className="text-xs text-gray-500">{style.label}</span>
+                <div className="flex justify-center items-center">
+                  <span className="text-xs font-[500] text-gray-900">{style.label}</span>
+                </div>
               </button>
             </li>
           );
