@@ -2,12 +2,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import uploadReducer from "./upload/uploadSlice";
 import searchReducer from "./search/searchSlice";
 import downloadReducer from "./download/downloadSlice";
+import statsReducer from "./stats/statsSlice"
 
 export const store = configureStore({
     reducer: {
         upload: uploadReducer,
         search: searchReducer,
-        download: downloadReducer
+        download: downloadReducer,
+        stats: statsReducer
     }
 })
 

@@ -361,7 +361,7 @@ export default function Upload({}: UploadPageProps) {
   };
 
   return (
-    <div className="flex h-full gap-4 w-full flex-col bg-gray-200 p-6">
+    <div className="flex h-full gap-4 w-full flex-col bg-gray-100 p-6">
       {notify === true ? (
         <div className="flex absolute shadow-md px-2.5 self-center flex-row align-center justify-between w-[380px] py-2 rounded-xl bg-red-200">
           <div className="flex flex-row gap-3">

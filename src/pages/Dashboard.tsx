@@ -1,4 +1,4 @@
-import { type ComponentType } from "react";
+import { type ComponentType, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Search,
@@ -9,6 +9,10 @@ import {
   Clock,
   type LucideProps,
 } from "lucide-react";
+import { useSelector } from "react-redux";
+import type { RootState } from "../redux/store";
+import { useAppDispatch } from "../redux/hook";
+import { fetchStatsThunk } from "../redux/stats/statsThunk";
 
 type IconType = ComponentType<LucideProps>;
 
@@ -16,6 +20,7 @@ interface FileTypeStat {
   id: string;
   extension: string;
   count: number;
+  todayCount: number;
   icon: IconType;
   iconColor: string;
   iconBg: string;
@@ -27,6 +32,7 @@ const FILE_TYPE_STATS: FileTypeStat[] = [
     id: "pdf",
     extension: ".pdf",
     count: 4,
+    todayCount: 0,
     icon: FileText,
     iconColor: "text-red-500",
     iconBg: "bg-red-50",
@@ -36,6 +42,7 @@ const FILE_TYPE_STATS: FileTypeStat[] = [
     id: "xls",
     extension: ".xls",
     count: 6,
+    todayCount: 0,
     icon: FileSpreadsheet,
     iconColor: "text-green-600",
     iconBg: "bg-green-50",
@@ -45,6 +52,7 @@ const FILE_TYPE_STATS: FileTypeStat[] = [
     id: "pptx",
     extension: ".pptx",
     count: 5,
+    todayCount: 0,
     icon: Presentation,
     iconColor: "text-orange-500",
     iconBg: "bg-orange-50",
@@ -54,6 +62,7 @@ const FILE_TYPE_STATS: FileTypeStat[] = [
     id: "txt",
     extension: ".txt",
     count: 10,
+    todayCount: 0,
     icon: FileText,
     iconColor: "text-gray-500",
     iconBg: "bg-gray-100",
@@ -63,6 +72,7 @@ const FILE_TYPE_STATS: FileTypeStat[] = [
     id: "jpeg",
     extension: ".jpeg",
     count: 7,
+    todayCount: 0,
     icon: ImageIcon,
     iconColor: "text-blue-500",
     iconBg: "bg-blue-50",
@@ -72,6 +82,7 @@ const FILE_TYPE_STATS: FileTypeStat[] = [
     id: "png",
     extension: ".png",
     count: 12,
+    todayCount: 0,
     icon: ImageIcon,
     iconColor: "text-blue-500",
     iconBg: "bg-blue-50",
@@ -81,6 +92,7 @@ const FILE_TYPE_STATS: FileTypeStat[] = [
     id: "jpg",
     extension: ".jpg",
     count: 14,
+    todayCount: 0,
     icon: ImageIcon,
     iconColor: "text-blue-500",
     iconBg: "bg-blue-50",
@@ -106,28 +118,35 @@ export interface NexdocDashboardProps {
 }
 
 export default function Dashboard({
-  totalFiles = 58,
-  filesAddedThisWeek = 6,
-  searchesThisWeek = 142,
-  fileTypeStats = FILE_TYPE_STATS,
   recentSearches = RECENT_SEARCHES,
   onSelectRecentSearch = () => {},
 }: NexdocDashboardProps) {
   const navigate = useNavigate();
-
+  const { statsData } = useSelector((state: RootState) => state.stats);
+  const dispatch = useAppDispatch();
   const onOpenSearch = () => {
     navigate("/search");
   };
 
+  useEffect(() => {
+    dispatch(fetchStatsThunk())
+  },[dispatch])
+
+  const fileTypeStats = FILE_TYPE_STATS.map((item) => ({
+    ...item,
+    count: statsData[`${item.id}_count` as keyof typeof statsData],
+    todayCount: statsData[`${item.id}_today` as keyof typeof statsData],
+  }));
+
   return (
-    <div className="h-full flex flex-col gap-5 w-full bg-gray-200 min-w-[640px] overflow-y-auto px-6 py-6 md:px-10 md:py-8">
+    <div className="h-full flex flex-col gap-5 w-full bg-gray-100 min-w-[640px] overflow-y-auto px-6 py-6 md:px-10 md:py-8">
       {/* Top row: brand + status */}
       <div className="flex bg-white p-5 px-6 rounded-3xl items-center justify-between">
         <span className="text-lg font-semibold text-gray-900">Dashboard</span>
         <div className="flex items-center gap-2 rounded-full bg-gray-200 px-3.5 py-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-gray-600" />
           <span className="text-xs font-semibold text-gray-900">
-            Offline &middot; secured
+            Offline &middot; Secured
           </span>
         </div>
       </div>
@@ -140,15 +159,17 @@ export default function Dashboard({
             </p>
             <div className="flex items-baseline gap-2">
               <p className="text-2xl font-bold text-gray-800 sm:text-5xl">
-                {totalFiles}
+                {statsData?.total_files}
               </p>
               <span className="text-lg font-medium text-green-600">
-                +{filesAddedThisWeek} Today
+                +{statsData.today_files} Today
               </span>
             </div>
           </div>
           <div className="rounded-full py-2 px-4 bg-gray-200 justify-center items-center">
-            <p className="text-gray-900 font-[500] text-sm">this week - 20</p>
+            <p className="text-gray-900 font-[500] text-sm">
+              this week - {statsData.today_files}
+            </p>
           </div>
         </div>
         <div className="flex flex-row rounded-3xl justify-between items-end bg-white p-8">
@@ -157,11 +178,13 @@ export default function Dashboard({
               Searches this week
             </p>
             <p className="text-2xl font-bold text-gray-800 sm:text-5xl">
-              {searchesThisWeek}
+              {statsData.total_searches}
             </p>
           </div>
           <div className="rounded-full py-2 px-4 bg-gray-200 justify-center items-center">
-            <p className="text-gray-900 font-[500] text-sm">Downloads Today - 0</p>
+            <p className="text-gray-900 font-[500] text-sm">
+              Downloads Today - {statsData.total_downloads}
+            </p>
           </div>
         </div>
       </div>
@@ -197,7 +220,7 @@ export default function Dashboard({
                 </div>
                 <div className="bg-gray-200 rounded-full h-3 p-3 flex justify-center items-center">
                   <p className="text-gray-900 font-semibold text-[12px] font-[500]">
-                    Today - 10
+                    Today - {item.todayCount}
                   </p>
                 </div>
               </div>

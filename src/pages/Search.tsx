@@ -31,7 +31,7 @@ function Search() {
   );
 
   return (
-    <div className="flex bg-gray-200 h-screen flex-col p-6">
+    <div className="flex bg-gray-100 h-screen flex-col p-6">
       <TopSearchBar />
       <div className="flex flex-1 flex-row gap-6 py-5 overflow-hidden">
         <div className="flex-1 bg-white rounded-4xl overflow-y-auto">

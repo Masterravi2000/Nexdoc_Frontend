@@ -59,7 +59,7 @@ function RowButton({
       type="button"
       onClick={onClick}
       className={`flex w-full items-center gap-5 rounded-full px-3 py-2 text-left text-[15px] transition-colors
-        ${active ? "bg-gray-200" : "hover:bg-gray-100"}`}
+        ${active ? "bg-gray-100" : "hover:bg-gray-100"}`}
     >
       {dotColor ? (
         <span
@@ -117,7 +117,7 @@ export default function LeftSideDefaultMenu({
   };
 
   return (
-    <div className="flex h-full w-full gap-5 flex-col bg-gray-200 pt-5 pl-5 pb-7">
+    <div className="flex h-full w-full gap-5 flex-col bg-gray-100 pt-5 pl-5 pb-7">
       <nav className="flex h-full w-full bg-white flex-col rounded-3xl p-4">
         {/* Header */}
         <div className="mb-8 mt-1 p-2 flex items-center gap-3 flex flex-row">
