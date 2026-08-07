@@ -8,11 +8,17 @@ import {
   Image as ImageIcon,
   Clock,
   type LucideProps,
+  X,
+  SearchCheck,
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../redux/store";
 import { useAppDispatch } from "../redux/hook";
 import { fetchStatsThunk } from "../redux/stats/statsThunk";
+import {
+  deleteRecentSearchThunk,
+  getRecentSearchThunk,
+} from "../redux/search/searchThunk";
 
 type IconType = ComponentType<LucideProps>;
 
@@ -100,37 +106,35 @@ const FILE_TYPE_STATS: FileTypeStat[] = [
   },
 ];
 
-const RECENT_SEARCHES: string[] = [
-  "termination clause",
-  "Q3 liability report",
-  "vendor NDA 2025",
-  "audit checklist",
-];
-
 export interface NexdocDashboardProps {
   totalFiles?: number;
   filesAddedThisWeek?: number;
   searchesThisWeek?: number;
   fileTypeStats?: FileTypeStat[];
-  recentSearches?: string[];
   onSelectRecentSearch?: (query: string) => void;
   onAddFiles?: () => void;
 }
 
 export default function Dashboard({
-  recentSearches = RECENT_SEARCHES,
   onSelectRecentSearch = () => {},
 }: NexdocDashboardProps) {
   const navigate = useNavigate();
   const { statsData } = useSelector((state: RootState) => state.stats);
   const dispatch = useAppDispatch();
+  const { recentSearches } = useSelector((state: RootState) => state.search);
   const onOpenSearch = () => {
     navigate("/search");
   };
 
   useEffect(() => {
-    dispatch(fetchStatsThunk())
-  },[dispatch])
+    dispatch(fetchStatsThunk());
+    dispatch(getRecentSearchThunk());
+  }, [dispatch]);
+
+  const handleDelete = async (id: number) => {
+    await dispatch(deleteRecentSearchThunk(id));
+    dispatch(getRecentSearchThunk());
+  };
 
   const fileTypeStats = FILE_TYPE_STATS.map((item) => ({
     ...item,
@@ -141,7 +145,7 @@ export default function Dashboard({
   return (
     <div className="h-full flex flex-col gap-5 w-full bg-gray-100 min-w-[640px] overflow-y-auto px-6 py-6 md:px-10 md:py-8">
       {/* Top row: brand + status */}
-      <div className="flex bg-white p-5 px-6 rounded-3xl items-center justify-between">
+      <div className="flex bg-white p-5 px-7 rounded-full items-center justify-between">
         <span className="text-lg font-semibold text-gray-900">Dashboard</span>
         <div className="flex items-center gap-2 rounded-full bg-gray-200 px-3.5 py-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-gray-600" />
@@ -198,9 +202,9 @@ export default function Dashboard({
               className="rounded-3xl flex flex-col gap-5 p-6 py-7 bg-white text-center"
             >
               <div className="flex flex-row items-center justify-between">
-                <div className={`w-[40px] h-[40px]${item.iconBg}`}>
+                <div className={`w-[45px] h-[45px]${item.iconBg}`}>
                   <Icon
-                    className={`h-[40px] w-[40px] ${item.iconColor}`}
+                    className={`h-[45px] w-[45px] ${item.iconColor}`}
                     strokeWidth={2}
                   />
                 </div>
@@ -242,19 +246,43 @@ export default function Dashboard({
       </button>
 
       {/* Recent searches */}
-      <p className="text-md pl-1 font-medium text-gray-400">Recent searches</p>
-      <div className="flex flex-wrap gap-2">
-        {recentSearches.map((search) => (
-          <button
-            key={search}
-            type="button"
-            onClick={() => onSelectRecentSearch(search)}
-            className="flex items-center gap-1.5 rounded-full border border-gray-100 bg-white px-4 py-2 text-sm text-gray-800 shadow-sm hover:border-gray-200 hover:bg-gray-50"
-          >
-            <Clock className="h-3.5 w-3.5 text-gray-400" strokeWidth={1.8} />
-            {search}
-          </button>
-        ))}
+      <div className="flex flex-col bg-white rounded-3xl gap-4 w-full h-full p-6">
+        <p className="textmd pl-1 font-medium text-gray-800">
+          Recent searches
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {recentSearches.length === 0 ? (
+            <div className="flex flex-1 flex-row pt-7 justify-center gap-2 items-center">
+              <SearchCheck className="w-5 h-5 text-gray-400 font-[500]"/>
+              <p className="text-gray-400 text-[15px]">Recent searches will appear here</p>
+            </div>
+          ) : (
+            recentSearches.map((search) => (
+              <div className="flex items-center gap-1 rounded-full bg-gray-200 px-4 py-1.5 transition-colors hover:bg-gray-300">
+                <button
+                  type="button"
+                  onClick={() => onSelectRecentSearch(search.query)}
+                  className="flex flex-1 cursor-pointer items-center gap-2 text-left"
+                >
+                  <Clock
+                    className="h-3.5 w-3.5 text-gray-600"
+                    strokeWidth={1.8}
+                  />
+                  <span className="truncate">{search.query}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleDelete(search.id)}
+                  className="cursor-pointer rounded-full p-1 transition-colors hover:bg-gray-400"
+                  aria-label="Delete recent search"
+                >
+                  <X className="h-3 w-3 text-gray-900" />
+                </button>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );

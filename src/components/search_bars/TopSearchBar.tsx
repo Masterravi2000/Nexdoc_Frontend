@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Search, X } from "lucide-react";
-import searchApiThunk from "../../redux/search/searchThunk";
+import { addRecentSearchThunk, searchApiThunk } from "../../redux/search/searchThunk";
 import { useAppDispatch } from "../../redux/hook";
 
 export interface SearchHeaderSectionProps {
@@ -31,7 +31,13 @@ export default function TopSearchBar({
     const debounceTimer = setTimeout(() => {
       dispatch(searchApiThunk(trimedQuery));
     }, 200);
-    return () => clearTimeout(debounceTimer);
+    const debounceTimer2 = setTimeout(() => {
+      dispatch(addRecentSearchThunk(trimedQuery))
+    }, 1000)
+    return () => {
+      clearTimeout(debounceTimer);
+      clearTimeout(debounceTimer2);
+    }
   },[query, dispatch])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,6 +57,7 @@ export default function TopSearchBar({
     const trimmedQuery = query.trim();
     if (!trimmedQuery) return;
     dispatch(searchApiThunk(trimmedQuery));
+    dispatch(addRecentSearchThunk(trimmedQuery))
     onSubmit(trimmedQuery)
   };
 

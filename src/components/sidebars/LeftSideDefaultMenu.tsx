@@ -1,7 +1,7 @@
 import { useState, type ComponentType } from "react";
+import { useLocation } from "react-router-dom";
 import {
   Home,
-  Clock,
   Settings,
   Info,
   type LucideProps,
@@ -28,7 +28,6 @@ interface TagItem {
 const NAV_ITEMS: NavItem[] = [
   { id: "home", label: "Home", icon: Home },
   { id: "search", label: "Search", icon: Search },
-  { id: "recents", label: "Recents", icon: Clock },
   { id: "upload", label: "Upload", icon: Upload },
 ];
 
@@ -93,20 +92,17 @@ export default function LeftSideDefaultMenu({
   onQuickAccessDrop = () => {},
 }: LeftSideDefaultMenuProps) {
   const navigate = useNavigate();
-  const [activeNav, setActiveNav] = useState<string | null>(null);
+  const location = useLocation();
   const [activeTag, setActiveTag] = useState<string | null>(null);
 
   const handleNavClick = (label: string) => {
     if (label === "Home") {
-      setActiveNav("home");
       navigate("/");
     }
     if (label === "Upload") {
-      setActiveNav("upload");
       navigate("/upload");
     }
     if (label === "Search") {
-      setActiveNav("search");
       navigate("/search");
     }
   };
@@ -133,7 +129,10 @@ export default function LeftSideDefaultMenu({
                 key={item.id}
                 icon={item.icon}
                 label={item.label}
-                active={activeNav === item.id}
+                active={
+                  location.pathname === `/${item.id}` ||
+                  (item.id === "home" && location.pathname === "/")
+                }
                 onClick={() => handleNavClick(item.label)}
               />
             ))}
