@@ -4,6 +4,7 @@ import Result from "./Results";
 import FileMetadataPanel from "../components/sidebars/FileMetadataPanel";
 import { useSelector } from "react-redux";
 import type { RootState } from "../redux/store";
+import { useLocation } from "react-router-dom";
 
 export interface SearchResult {
   content: string;
@@ -29,12 +30,14 @@ function Search() {
   const { results } = useSelector(
     (state: RootState) => state.search,
   );
+  const location = useLocation();
+  const selectedQuery  = location.state?.query ?? "";
 
   return (
-    <div className="flex bg-gray-100 h-screen flex-col p-6">
-      <TopSearchBar />
+    <div className="flex bg-[#fcfcfc] h-screen flex-col p-6">
+      <TopSearchBar initialQuery={selectedQuery}/>
       <div className="flex flex-1 flex-row gap-6 py-5 overflow-hidden">
-        <div className="flex-1 bg-white rounded-4xl overflow-y-auto">
+        <div className="flex-1 bg-white border border-1 border-gray-100 shadow-md rounded-4xl overflow-y-auto">
           <Result
             results={results ?? []}
             selectedIndex={selectedIndex}

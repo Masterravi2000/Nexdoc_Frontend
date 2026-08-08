@@ -1,5 +1,4 @@
 import { type ComponentType, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   Search,
   FileText,
@@ -11,6 +10,7 @@ import {
   X,
   SearchCheck,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import type { RootState } from "../redux/store";
 import { useAppDispatch } from "../redux/hook";
@@ -111,19 +111,22 @@ export interface NexdocDashboardProps {
   filesAddedThisWeek?: number;
   searchesThisWeek?: number;
   fileTypeStats?: FileTypeStat[];
-  onSelectRecentSearch?: (query: string) => void;
   onAddFiles?: () => void;
 }
 
-export default function Dashboard({
-  onSelectRecentSearch = () => {},
-}: NexdocDashboardProps) {
+export default function Dashboard({}: NexdocDashboardProps) {
   const navigate = useNavigate();
   const { statsData } = useSelector((state: RootState) => state.stats);
   const dispatch = useAppDispatch();
   const { recentSearches } = useSelector((state: RootState) => state.search);
   const onOpenSearch = () => {
     navigate("/search");
+  };
+
+  const onSelectRecentSearch = (query: string) => {
+    navigate("/search", {
+      state: { query },
+    });
   };
 
   useEffect(() => {
@@ -143,9 +146,9 @@ export default function Dashboard({
   }));
 
   return (
-    <div className="h-full flex flex-col gap-5 w-full bg-gray-100 min-w-[640px] overflow-y-auto px-6 py-6 md:px-10 md:py-8">
+    <div className="h-full flex flex-col gap-5 w-full bg-[#fcfcfc] min-w-[640px] overflow-y-auto px-6 py-6 md:px-10 md:py-8">
       {/* Top row: brand + status */}
-      <div className="flex bg-white p-5 px-7 rounded-full items-center justify-between">
+      <div className="flex bg-white p-5 px-7 rounded-full items-center justify-between border border-1 border-gray-100 shadow-md">
         <span className="text-lg font-semibold text-gray-900">Dashboard</span>
         <div className="flex items-center gap-2 rounded-full bg-gray-200 px-3.5 py-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-gray-600" />
@@ -156,7 +159,7 @@ export default function Dashboard({
       </div>
       {/* Stats row */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="flex flex-row justify-between items-end rounded-3xl bg-white p-8">
+        <div className="flex flex-row justify-between items-end rounded-3xl bg-white p-8 border border-1 border-gray-100 shadow-md">
           <div className="sm:col-span-1">
             <p className="mb-1.5 text-sm font-bold text-gray-900">
               Total files indexed
@@ -176,7 +179,7 @@ export default function Dashboard({
             </p>
           </div>
         </div>
-        <div className="flex flex-row rounded-3xl justify-between items-end bg-white p-8">
+        <div className="flex flex-row rounded-3xl justify-between items-end bg-white p-8 border border-1 border-gray-100 shadow-md">
           <div>
             <p className="mb-1.5 text-sm font-bold text-gray-900">
               Searches this week
@@ -199,7 +202,7 @@ export default function Dashboard({
           return (
             <div
               key={item.id}
-              className="rounded-3xl flex flex-col gap-5 p-6 py-7 bg-white text-center"
+              className="rounded-3xl flex flex-col gap-5 p-6 py-7 bg-white text-center border border-1 border-gray-100 shadow-md"
             >
               <div className="flex flex-row items-center justify-between">
                 <div className={`w-[45px] h-[45px]${item.iconBg}`}>
@@ -237,7 +240,7 @@ export default function Dashboard({
       <button
         type="button"
         onClick={onOpenSearch}
-        className="p-4 gap-3 px-5 w-full items-center flex flex-row rounded-full bg-white hover:bg-gray-100"
+        className="p-4 gap-3 px-5 w-full items-center flex flex-row rounded-full bg-white hover:bg-gray-100 border border-1 border-gray-100 shadow-md"
       >
         <Search className=" text-gray-400" strokeWidth={2} />
         <p className="text-gray-400 font-[400] text-sm">
@@ -246,19 +249,19 @@ export default function Dashboard({
       </button>
 
       {/* Recent searches */}
-      <div className="flex flex-col bg-white rounded-3xl gap-4 w-full h-full p-6">
-        <p className="textmd pl-1 font-medium text-gray-800">
-          Recent searches
-        </p>
+      <div className="flex flex-col bg-white rounded-3xl gap-4 w-full h-full p-6 border border-1 border-gray-100 shadow-md">
+        <p className="textmd pl-1 font-medium text-gray-800">Recent searches</p>
         <div className="flex flex-wrap gap-2">
           {recentSearches.length === 0 ? (
             <div className="flex flex-1 flex-row pt-7 justify-center gap-2 items-center">
-              <SearchCheck className="w-5 h-5 text-gray-400 font-[500]"/>
-              <p className="text-gray-400 text-[15px]">Recent searches will appear here</p>
+              <SearchCheck className="w-5 h-5 text-gray-400 font-[500]" />
+              <p className="text-gray-400 text-[15px]">
+                Recent searches will appear here
+              </p>
             </div>
           ) : (
             recentSearches.map((search) => (
-              <div className="flex items-center gap-1 rounded-full bg-gray-200 px-4 py-1.5 transition-colors hover:bg-gray-300">
+              <div className="flex items-center gap-1 rounded-full bg-gray-200 px-4 py-1.5 transition-colors hover:bg-gray-300 ">
                 <button
                   type="button"
                   onClick={() => onSelectRecentSearch(search.query)}

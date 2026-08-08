@@ -108,8 +108,8 @@ function getFileTypeStyle(fileType: string): FileTypeStyle {
 
 function formatLocation(result: SearchResult): string {
   const parts: string[] = [];
-  if (result.slide_number != null) parts.push(`Slide ${result.slide_number}`);
-  if (result.page_number != null) parts.push(`Page ${result.page_number}`);
+  if (result.slide_number != null) parts.push(`In Slide No. ${result.slide_number}`);
+  if (result.page_number != null) parts.push(`In Page No. ${result.page_number}`);
   if (result.line_start != null && result.line_end != null) {
     parts.push(`Lines ${result.line_start}\u2013${result.line_end}`);
   } else if (result.line_start != null) {

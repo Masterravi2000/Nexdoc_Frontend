@@ -65,7 +65,7 @@ export default function TopSearchBar({
     <div className="flex w-full items-center gap-4">
       <form
         onSubmit={handleSubmit}
-        className="relative flex h-14 flex-1 items-center rounded-full bg-white pl-5 pr-4"
+        className="relative flex h-14 flex-1 items-center rounded-full bg-white border border-1 border-gray-100 shadow-md pl-5 pr-4"
       >
         <Search className="h-5 w-5 flex-shrink-0 text-gray-400" strokeWidth={3} />
         <input
@@ -92,7 +92,7 @@ export default function TopSearchBar({
         type="button"
         onClick={onOpenMore}
         aria-label="More options"
-        className="flex px-8 py-4 mr-4 flex-shrink-0 items-center justify-center rounded-full bg-white hover:bg-gray-50"
+        className="flex px-8 py-4 mr-4 flex-shrink-0 items-center justify-center rounded-full bg-white hover:bg-gray-50 border border-1 border-gray-100 shadow-md"
       >
         <h1 className="text-md text-gray-700 font-[500]">Nex Ai</h1>
       </button>

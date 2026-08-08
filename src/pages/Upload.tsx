@@ -361,7 +361,7 @@ export default function Upload({}: UploadPageProps) {
   };
 
   return (
-    <div className="flex h-full gap-4 w-full flex-col bg-gray-100 p-6">
+    <div className="flex h-full gap-4 w-full flex-col bg-[#fcfcfc] p-6">
       {notify === true ? (
         <div className="flex absolute shadow-md px-2.5 self-center flex-row align-center justify-between w-[380px] py-2 rounded-xl bg-red-200">
           <div className="flex flex-row gap-3">
@@ -379,7 +379,7 @@ export default function Upload({}: UploadPageProps) {
       ) : null}
 
       {/* Header */}
-      <div className=" flex py-5 px-6 rounded-3xl bg-white items-center justify-between">
+      <div className=" flex py-5 px-6 rounded-3xl bg-white items-center justify-between border border-1 border-gray-100 shadow-md">
         <div className="flex flex-col">
           <p className="text-lg font-[700] text-gray-800">Upload documents</p>
           <p className="text-xs text-gray-600 ml-0.5">
@@ -394,16 +394,16 @@ export default function Upload({}: UploadPageProps) {
             type="button"
             onClick={handleUpload}
             disabled={totalAttached === 0}
-            className="rounded-full mr-2 bg-blue-500 border border-gray-200 shadow-sm px-6 py-2 text-sm font-semibold hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded-full mr-2 bg-[#03989e] border border-gray-200 shadow-sm px-6 py-2 text-sm font-semibold hover:bg-[#05888d] disabled:cursor-not-allowed disabled:opacity-40"
           >
             <p className="text-md font-[500] text-white">Upload</p>
           </button>
         </div>
       </div>
 
-      <div className="flex min-w-0 flex-row gap-4 overflow-hidden">
+      <div className="flex min-w-0 flex-row gap-4">
         {/* Attach sections — each independently horizontally scrollable */}
-        <div className="min-w-0 flex-1 overflow-hidden bg-white gap-4 px-6 py-7 rounded-3xl">
+        <div className="min-w-0 flex-1 overflow-hidden bg-white gap-6 p-6 rounded-3xl border border-1 border-gray-100 shadow-md">
           {FILE_TYPE_CONFIGS.map((config) => {
             const Icon = config.icon;
             const files = attached[config.id];
@@ -411,7 +411,7 @@ export default function Upload({}: UploadPageProps) {
               files.length >= MAX_PER_TYPE || totalAttached >= MAX_TOTAL;
 
             return (
-              <div key={config.id} className="h-[80px]">
+              <div key={config.id} className="h-[80px] mt-1">
                 <div className="mb-2 flex items-center gap-2 text-[12.5px] font-semibold text-gray-900">
                   <Icon className={`h-7 w-7 ${config.color}`} strokeWidth={2} />
                   <h1 className="text-gray-900 font-[500] text-[17px]">
@@ -475,18 +475,18 @@ export default function Upload({}: UploadPageProps) {
         {/* failed file pannel details */}
         {failedFileSection === true ? (
           <div className="h-full">
-            <div className="h-full flex flex-srink-0 flex-col w-[250px] z-100 bg-red-200 rounded-3xl p-4 item-center justify-center">
+            <div className="flex flex-srink-0 flex-col w-[250px] h-[470px] z-100 bg-white rounded-3xl p-5 item-center justify-center border border-1 border-gray-100 shadow-md">
               {/* Header Section */}
               <div className="flex flex-row justify-between">
-                <h1 className="text-xl text-red-500 font-[700] ml-1">
+                <h1 className="text-lg text-gray-700 font-[700] ml-1">
                   Failed files
                 </h1>
                 <button
                   onClick={() => setFailedFilesSection(false)}
-                  className="rounded-full p-1 bg-red-300 hover:bg-red-400"
+                  className="rounded-full p-1 bg-gray-200 hover:bg-gray-300"
                 >
                   <ArrowRightIcon
-                    className="h-4 w-7 text-red-600"
+                    className="h-4 w-7 text-gray-500"
                     strokeWidth={3}
                   />
                 </button>
@@ -494,7 +494,7 @@ export default function Upload({}: UploadPageProps) {
               {/* body */}
               <div className="mt-3 flex-1 space-y-2 overflow-y-auto pr-1 scrollbar scrollbar-thin scrollbar-thumb-red-200 scrollbar-track-rounded-full scrollbar-track-transparent">
                 {failedFiles.length === 0 ? (
-                  <p className="py-10 text-center text-sm mt-6 text-red-400">
+                  <p className="py-10 text-center text-sm mt-6 text-gray-400">
                     No failed file
                   </p>
                 ) : (
@@ -527,24 +527,24 @@ export default function Upload({}: UploadPageProps) {
             </div>
           </div>
         ) : (
-          <div className="z-100 w-[50px] flex-shrink-0 flex flex-col right-5 h-[450px] justify-between item-center bg-red-200 rounded-full p-2">
+          <div className="z-100 w-[50px] flex-shrink-0 flex flex-col right-5 h-[470px] justify-between item-center bg-white rounded-full p-2 border border-1 border-gray-100 shadow-md">
             <button
               onClick={() => setFailedFilesSection(true)}
-              className="p-2 rounded-full bg-red-300 mt-0.1 hover:bg-red-400"
+              className="p-2 rounded-full bg-gray-200 mt-0.1 hover:bg-gray-300"
             >
               <ArrowLeft
-                className="text-red-600 w-4 h-4 font-[600]"
+                className="text-gray-500 w-4 h-4 font-[600]"
                 strokeWidth={3}
               />
             </button>
             <div className="flex h-full w-full flex-col justify-center items-center">
-              <p className="rotate-90 text-red-500 font-[600] text-lg mb-5">
+              <p className="rotate-90 text-gray-400 font-[600] text-lg mb-5">
                 Failed
               </p>
-              <p className="rotate-90 text-red-500 font-[600] text-lg mb-6">
+              <p className="rotate-90 text-gray-400 font-[600] text-lg mb-6">
                 Files
               </p>
-              <p className="rotate-90 text-red-500 font-[600] text-lg mb-6">
+              <p className="rotate-90 text-gray-400 font-[600] text-lg mb-6">
                 Pannel
               </p>
             </div>
@@ -553,8 +553,8 @@ export default function Upload({}: UploadPageProps) {
       </div>
 
       {/* Uploading list — vertically scrollable as one unit */}
-      <div className="flex min-h-0 flex-1 flex-col bg-white rounded-3xl p-5 ">
-        <p className="mb-2 text-md font-semibold text-gray-900">
+      <div className="flex min-h-0 flex-1 flex-col bg-white rounded-3xl p-6 px-7 border border-1 border-gray-100 shadow-md">
+        <p className="mb-2 text-lg font-semibold text-gray-900">
           Uploading {uploading.length > 0 ? `(${uploading.length})` : ""}
         </p>
         <div className="flex-1 overflow-x-auto space-y-2 p-2 scrollbar scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-rounded-full scrollbar-track-transparen">
@@ -569,7 +569,7 @@ export default function Upload({}: UploadPageProps) {
             return (
               <div
                 key={f.id}
-                className="rounded-lg border border-gray-100 px-4 py-2.5"
+                className="px-4 py-2.5"
               >
                 <div className="mb-1.5 flex items-center justify-between">
                   <div className="flex min-w-0 items-center gap-2">

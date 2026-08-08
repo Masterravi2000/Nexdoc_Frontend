@@ -153,7 +153,7 @@ export default function FileMetadataPanel({
   const { loading } = useSelector((state: RootState) => state.download);
   if (!result) {
     return (
-      <div className="flex rounded-3xl h-full bg-white w-full items-center justify-center px-6">
+      <div className="flex rounded-3xl h-full bg-white w-full items-center justify-center px-6 border border-1 border-gray-100 shadow-md">
         <div className="flex flex-col items-center justify-center gap-2">
           <LucideLassoSelect className="w-10 h-10 text-[#C0C0C0]" />
           <p className="w-[150px] text-center text-[#C3C3C3] text-[13px]">
@@ -198,7 +198,7 @@ export default function FileMetadataPanel({
   const detailRows = buildDetailRows(result);
 
   return (
-    <div className="h-full w-full bg-white p-1 rounded-3xl">
+    <div className="h-full w-full bg-white p-1 rounded-3xl border border-1 border-gray-100 shadow-md">
       <div className="flex h-full w-full flex-col px-5 py-6">
         <div
           className={`mb-4 flex h-[200px] w-full items-center justify-center rounded-2xl ${style.bg}`}
@@ -244,9 +244,9 @@ export default function FileMetadataPanel({
             <button
               type="button"
               onClick={handleDownload}
-              className="flex-1 rounded-full bg-blue-500 py-2.5 text-[13px] font-medium text-white hover:bg-blue-600"
+              className="flex-1 rounded-full bg-[#03989e] py-2.5 text-[13px] font-medium text-white hover:bg-blue-600"
             >
-              <p className="text-white text-[16px] font-[500]">Get File</p>
+              <p className="text-white text-[16px] font-[600]">Get File</p>
             </button>
           )}
         </div>

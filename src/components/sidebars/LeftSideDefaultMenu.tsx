@@ -10,6 +10,7 @@ import {
   FileSearchCornerIcon,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import LogoIcon from "../svg_icons/LogoIcon";
 
 type IconType = ComponentType<LucideProps>;
 
@@ -58,7 +59,7 @@ function RowButton({
       type="button"
       onClick={onClick}
       className={`flex w-full items-center gap-5 rounded-full px-3 py-2 text-left text-[15px] transition-colors
-        ${active ? "bg-gray-100" : "hover:bg-gray-100"}`}
+        ${active ? "bg-[#03989e]" : "hover:bg-gray-100"}`}
     >
       {dotColor ? (
         <span
@@ -66,12 +67,12 @@ function RowButton({
         />
       ) : Icon ? (
         <Icon
-          className={`h-[20px] w-[20px] flex-shrink-0 ${active ? "text-gray-800" : "text-gray-800"} ${iconClassName}`}
+          className={`h-[20px] w-[20px] flex-shrink-0 ${active ? "text-white" : "text-[#03989e]"} ${iconClassName}`}
           strokeWidth={2.5}
         />
       ) : null}
       <span
-        className={`truncate font-[500]  ${active ? "text-gray-800" : "text-gray-800 "} text-[15px]`}
+        className={`truncate font-[500]  ${active ? "text-white" : "text-[#03989e]"} text-[15px]`}
       >
         {label}
       </span>
@@ -113,12 +114,14 @@ export default function LeftSideDefaultMenu({
   };
 
   return (
-    <div className="flex h-full w-full gap-5 flex-col bg-gray-100 pt-5 pl-5 pb-7">
-      <nav className="flex h-full w-full bg-white flex-col rounded-3xl p-4">
+    <div className="flex h-full w-full gap-5 flex-col bg-[#fcfcfc] pt-5 pl-5 pb-7 pr-1.5">
+      <nav className="flex h-full w-full bg-white border border-1 border-gray-100 shadow-md flex-col rounded-3xl p-4">
         {/* Header */}
-        <div className="mb-8 mt-1 p-2 flex items-center gap-3 flex flex-row">
-          <FileSearchCornerIcon className="w-6 h-6 text-gray-800 font-[800]" />
-          <h2 className="text-[20px] font-[500] text-gray-800">Nexdoc</h2>
+        <div className="mb-8 py-2 px-1 flex flex-row items-center gap-2">
+          <div className="h-[27px] w-[27px]">
+            <LogoIcon />
+          </div>
+          <h2 className="truncate text-[22px] font-[700] text-[#03989e]">Nexdoc</h2>
         </div>
 
         <div className="flex-1 overflow-y-auto">
@@ -140,7 +143,7 @@ export default function LeftSideDefaultMenu({
         </div>
       </nav>
 
-      <nav className="flex w-full bg-white flex-col rounded-3xl p-4">
+      <nav className="flex w-full bg-white shadow-md border border-1 border-gray-100 flex-col rounded-3xl p-4 pr-1.5">
         <button
           type="button"
           onClick={() => onQuickAccessDrop()}
