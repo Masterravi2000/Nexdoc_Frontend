@@ -492,7 +492,7 @@ export default function Upload({}: UploadPageProps) {
                 </button>
               </div>
               {/* body */}
-              <div className="mt-3 flex-1 space-y-2 overflow-y-auto pr-1 scrollbar scrollbar-thin scrollbar-thumb-red-200 scrollbar-track-rounded-full scrollbar-track-transparent">
+              <div className="mt-3 flex-1 space-y-2 overflow-y-auto pr-1 scrollbar scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-rounded-full scrollbar-track-transparent">
                 {failedFiles.length === 0 ? (
                   <p className="py-10 text-center text-sm mt-6 text-gray-400">
                     No failed file

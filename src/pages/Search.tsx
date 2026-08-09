@@ -43,7 +43,7 @@ function Search() {
           nexai={nexai}
         />
         <div className="flex flex-1 flex-row gap-6 py-5 overflow-hidden">
-          <div className="flex-1 min-h-0 bg-white border border-1 border-gray-100 shadow-md rounded-4xl overflow-y-auto">
+          <div className="flex-1 min-h-0 bg-white border border-1 border-gray-100 shadow-md rounded-4xl overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-rounded-full scrollbar-track-transparent">
             <Result
               results={results ?? []}
               selectedIndex={selectedIndex}
@@ -61,7 +61,7 @@ function Search() {
       </div>
       {/* nexai part */}
       {nexai === true ? (
-        <div className="w-[45%] h-full flex flex-col bg-white rounded-3xl border border-1 border-gray-100 shadow-md">
+        <div className="w-[40%] h-full flex flex-col bg-white rounded-3xl border border-1 border-gray-100 shadow-md">
           <NexAi
             nexaiButton={setNexAi}
             messages={messages}

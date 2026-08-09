@@ -1,11 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { Sparkles, X, ArrowUp, ArchiveIcon } from "lucide-react";
+import { X, ArrowUp } from "lucide-react";
 import { useAppDispatch } from "../redux/hook";
 import { searchApiThunk } from "../redux/search/searchThunk";
 import { useSelector } from "react-redux";
 import type { RootState } from "../redux/store";
 import { clearAiResponse } from "../redux/search/searchSlice";
-import LogoIcon from "../components/svg_icons/LogoIcon";
 import NexaiLogo from "../components/svg_icons/NexaiLogo";
 
 export interface NexAiSource {
@@ -121,8 +120,8 @@ export default function NexAi({
         className="flex flex-1 min-h-0 flex-col gap-5 overflow-y-auto p-6 scrollbar scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-rounded-full scrollbar-track-transparen"
       >
         {messages.length === 0 && !isTyping && (
-          <p className="mt-6 text-center text-xs leading-relaxed text-gray-400">
-            Ask Nex Ai about your documents &mdash; it can summarize, verify
+          <p className="px-4 flex-wrap text-center self-end text-xs leading-relaxed text-gray-400">
+            Ask Nex Ai about your documents it can summarize, verify
             facts, or search deeper into what you've found.
           </p>
         )}
@@ -179,7 +178,7 @@ export default function NexAi({
 
       {/* Suggested prompts + input */}
       <div className="border-t border-gray-100 p-4">
-        <div className="flex items-center gap-1.5 rounded-xl bg-gray-200 px-2.5 pl-3 py-1.5">
+        <div className="flex items-center gap-1.5 rounded-xl bg-gray-200 px-2.5 pl-3 py-2">
           <input
             type="text"
             value={input}
