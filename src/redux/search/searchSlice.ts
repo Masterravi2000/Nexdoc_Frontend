@@ -21,12 +21,28 @@ interface recentSearchResponse {
     searched_at: string
 }
 
+// NEW: shape for the AI mode's response
+interface AiSource {
+    file_name: string;
+    file_type: string;
+    file_size: string;
+    page_number: number | null;
+    slide_number: number | null;
+    last_modified: string;
+}
+
+interface AiResponse {
+    answer: string;
+    sources: AiSource[];
+}
+
 interface searchResult {
     loading: boolean;
     success: boolean;
     error: string | null;
     results: SearchResult[];
     recentSearches: recentSearchResponse[];
+    aiResponse: AiResponse | null;
 }
 
 const initialState: searchResult = {
@@ -35,12 +51,17 @@ const initialState: searchResult = {
     error: null,
     results: [],
     recentSearches: [],
+    aiResponse: null,
 }
 
 const searchSlice = createSlice ({
     name: "search",
     initialState,
-    reducers: {},
+    reducers: {
+        clearAiResponse: (state) => {
+            state.aiResponse = null;
+        }
+    },
     extraReducers: (builder) => {
         builder
         
@@ -52,7 +73,13 @@ const searchSlice = createSlice ({
         .addCase(searchApiThunk.fulfilled, (state, action) =>  {
             state.loading = false;
             state.success = true;
-            state.results = action.payload.results
+            
+            // Branch based on which shape actually came back
+            if ("answer" in action.payload) {
+                state.aiResponse = action.payload;
+            } else {
+                state.results = action.payload.results;
+            }
         })
         .addCase(searchApiThunk.rejected, (state, action) => {
             state.loading = false;
@@ -78,4 +105,5 @@ const searchSlice = createSlice ({
     }
 })
 
+export const { clearAiResponse } = searchSlice.actions;
 export default searchSlice.reducer;

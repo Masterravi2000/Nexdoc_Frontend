@@ -5,6 +5,7 @@ import FileMetadataPanel from "../components/sidebars/FileMetadataPanel";
 import { useSelector } from "react-redux";
 import type { RootState } from "../redux/store";
 import { useLocation } from "react-router-dom";
+import NexAi, { type NexAiMessage } from "../pages/Nexai";
 
 export interface SearchResult {
   content: string;
@@ -27,29 +28,47 @@ export interface SearchResultsProps {
 
 function Search() {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const { results } = useSelector(
-    (state: RootState) => state.search,
-  );
+  const [nexai, setNexAi] = useState(false);
+  const [messages, setMessages] = useState<NexAiMessage[]>([]);
+  const { results } = useSelector((state: RootState) => state.search);
   const location = useLocation();
-  const selectedQuery  = location.state?.query ?? "";
+  const selectedQuery = location.state?.query ?? "";
 
   return (
-    <div className="flex bg-[#fcfcfc] h-screen flex-col p-6">
-      <TopSearchBar initialQuery={selectedQuery}/>
-      <div className="flex flex-1 flex-row gap-6 py-5 overflow-hidden">
-        <div className="flex-1 bg-white border border-1 border-gray-100 shadow-md rounded-4xl overflow-y-auto">
-          <Result
-            results={results ?? []}
-            selectedIndex={selectedIndex}
-            onSelectResult={(_, index) => setSelectedIndex(index)}
-          />
-        </div>
-        <div className="w-1/4 flex-shrink-0">
-          <FileMetadataPanel
-            result={selectedIndex !== null ? results[selectedIndex] : null}
-          />
+    <div className="flex bg-[#fcfcfc] h-screen flex-row p-6 gap-6">
+      <div className="h-full w-full flex flex-col">
+        <TopSearchBar
+          initialQuery={selectedQuery}
+          nexaiButton={setNexAi}
+          nexai={nexai}
+        />
+        <div className="flex flex-1 flex-row gap-6 py-5 overflow-hidden">
+          <div className="flex-1 min-h-0 bg-white border border-1 border-gray-100 shadow-md rounded-4xl overflow-y-auto">
+            <Result
+              results={results ?? []}
+              selectedIndex={selectedIndex}
+              onSelectResult={(_, index) => setSelectedIndex(index)}
+            />
+          </div>
+          {nexai === false && (
+            <div className="w-1/4 flex-shrink-0 min-h-0">
+              <FileMetadataPanel
+                result={selectedIndex !== null ? results[selectedIndex] : null}
+              />
+            </div>
+          )}
         </div>
       </div>
+      {/* nexai part */}
+      {nexai === true ? (
+        <div className="w-[45%] h-full flex flex-col bg-white rounded-3xl border border-1 border-gray-100 shadow-md">
+          <NexAi
+            nexaiButton={setNexAi}
+            messages={messages}
+            setMessages={setMessages}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }

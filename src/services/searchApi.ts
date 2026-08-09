@@ -1,8 +1,8 @@
 import axiosInstance from "../utils/API/api";
 
-export const searchApi = async (query: string) => {
+export const searchApi = async (query: string, mode: string) => {
   const response = await axiosInstance.post("/api/search", {
-    query,
+    query, mode
   });
   return response.data;
 };

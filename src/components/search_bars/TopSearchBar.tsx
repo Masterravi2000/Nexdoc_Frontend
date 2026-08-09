@@ -1,9 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 import { Search, X } from "lucide-react";
-import { addRecentSearchThunk, searchApiThunk } from "../../redux/search/searchThunk";
+import {
+  addRecentSearchThunk,
+  searchApiThunk,
+} from "../../redux/search/searchThunk";
 import { useAppDispatch } from "../../redux/hook";
+import NexaiLogo from "../svg_icons/NexaiLogo";
 
 export interface SearchHeaderSectionProps {
+  nexai?: boolean;
+  nexaiButton?: React.Dispatch<React.SetStateAction<boolean>>;
   initialQuery?: string;
   placeholder?: string;
   onSearchChange?: (query: string) => void;
@@ -13,11 +19,15 @@ export interface SearchHeaderSectionProps {
 }
 
 export default function TopSearchBar({
+  nexai,
+  nexaiButton,
   initialQuery = "",
   placeholder = "Search a topic, clause, or file name",
   onSearchChange = () => {},
   onSubmit = () => {},
-  onOpenMore = () => {},
+  onOpenMore = () => {
+    nexaiButton?.(true);
+  },
 }: SearchHeaderSectionProps) {
   const dispatch = useAppDispatch();
 
@@ -29,16 +39,21 @@ export default function TopSearchBar({
     const trimedQuery = query.trim();
     if (!trimedQuery) return;
     const debounceTimer = setTimeout(() => {
-      dispatch(searchApiThunk(trimedQuery));
+      dispatch(
+        searchApiThunk({
+          query: trimedQuery,
+          mode: "offline",
+        }),
+      );
     }, 200);
     const debounceTimer2 = setTimeout(() => {
-      dispatch(addRecentSearchThunk(trimedQuery))
-    }, 1000)
+      dispatch(addRecentSearchThunk(trimedQuery));
+    }, 1000);
     return () => {
       clearTimeout(debounceTimer);
       clearTimeout(debounceTimer2);
-    }
-  },[query, dispatch])
+    };
+  }, [query, dispatch]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newQuery = e.target.value;
@@ -56,9 +71,14 @@ export default function TopSearchBar({
     e.preventDefault();
     const trimmedQuery = query.trim();
     if (!trimmedQuery) return;
-    dispatch(searchApiThunk(trimmedQuery));
-    dispatch(addRecentSearchThunk(trimmedQuery))
-    onSubmit(trimmedQuery)
+    dispatch(
+      searchApiThunk({
+        query: trimmedQuery,
+        mode: "offline",
+      }),
+    );
+    dispatch(addRecentSearchThunk(trimmedQuery));
+    onSubmit(trimmedQuery);
   };
 
   return (
@@ -67,7 +87,10 @@ export default function TopSearchBar({
         onSubmit={handleSubmit}
         className="relative flex h-14 flex-1 items-center rounded-full bg-white border border-1 border-gray-100 shadow-md pl-5 pr-4"
       >
-        <Search className="h-5 w-5 flex-shrink-0 text-gray-400" strokeWidth={3} />
+        <Search
+          className="h-5 w-5 flex-shrink-0 text-gray-400"
+          strokeWidth={3}
+        />
         <input
           ref={inputRef}
           type="text"
@@ -88,14 +111,17 @@ export default function TopSearchBar({
         )}
       </form>
 
-      <button
-        type="button"
-        onClick={onOpenMore}
-        aria-label="More options"
-        className="flex px-8 py-4 mr-4 flex-shrink-0 items-center justify-center rounded-full bg-white hover:bg-gray-50 border border-1 border-gray-100 shadow-md"
-      >
-        <h1 className="text-md text-gray-700 font-[500]">Nex Ai</h1>
-      </button>
+      {nexai === false && (
+        <button
+          type="button"
+          onClick={onOpenMore}
+          aria-label="More options"
+          className="flex px-4.5 py-4 gap-2 mr-4 flex-shrink-0 items-center justify-center rounded-full bg-white hover:bg-gray-50 border border-1 border-gray-100 shadow-md"
+        >
+          <NexaiLogo />
+          <h1 className="text-md text-gray-800 pr-1 font-[500]">Nex ai</h1>
+        </button>
+      )}
     </div>
   );
 }

@@ -6,8 +6,6 @@ import {
   Image as ImageIcon,
   File as FileIcon,
   type LucideProps,
-  BoxSelect,
-  DownloadCloud,
   File,
 } from "lucide-react";
 

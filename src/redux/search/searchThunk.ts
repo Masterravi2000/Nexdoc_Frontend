@@ -7,11 +7,16 @@ import {
   clearRecentSearches,
 } from "../../services/searchApi";
 
+interface searchPayload {
+  query: string;
+  mode: string;
+}
+
 export const searchApiThunk = createAsyncThunk(
   "document/search",
-  async (query: string, thunkAPI) => {
+  async ({query, mode}: searchPayload, thunkAPI) => {
     try {
-      const response = await searchApi(query);
+      const response = await searchApi(query, mode);
       return response;
     } catch (error: any) {
       thunkAPI.rejectWithValue(
