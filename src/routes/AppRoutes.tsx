@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 
 import MainLayout from "../layouts/MainLayout";
 
@@ -11,7 +11,7 @@ import About from "../pages/About";
 
 const AppRoutes = () => {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<Dashboard />} />
@@ -22,7 +22,7 @@ const AppRoutes = () => {
           <Route path="/about" element={<About />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 };
 

@@ -7,7 +7,6 @@ import {
   type LucideProps,
   Upload,
   Search,
-  FileSearchCornerIcon,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import LogoIcon from "../svg_icons/LogoIcon";
@@ -58,8 +57,8 @@ function RowButton({
     <button
       type="button"
       onClick={onClick}
-      className={`flex w-full items-center gap-5 rounded-full px-3 py-2 text-left text-[15px] transition-colors
-        ${active ? "bg-[#03989e]" : "hover:bg-gray-100"}`}
+      className={`flex w-full items-center gap-4 rounded-lg px-3 py-1.5 text-left text-[15px] transition-colors
+        ${active ? "bg-gray-200" : "hover:bg-gray-100"}`}
     >
       {dotColor ? (
         <span
@@ -67,12 +66,12 @@ function RowButton({
         />
       ) : Icon ? (
         <Icon
-          className={`h-[20px] w-[20px] flex-shrink-0 ${active ? "text-white" : "text-[#03989e]"} ${iconClassName}`}
+          className={`h-[18px] w-[18px] flex-shrink-0 ${active ? "text-gray-900" : "text-gray-900"} ${iconClassName}`}
           strokeWidth={2.5}
         />
       ) : null}
       <span
-        className={`truncate font-[500]  ${active ? "text-white" : "text-[#03989e]"} text-[15px]`}
+        className={`truncate font-[600]  ${active ? "text-gray-900" : "text-gray-900"} text-[14px]`}
       >
         {label}
       </span>
@@ -114,17 +113,17 @@ export default function LeftSideDefaultMenu({
   };
 
   return (
-    <div className="flex h-full w-full gap-5 flex-col bg-[#fcfcfc] pt-5 pl-5 pb-7 pr-1.5">
-      <nav className="flex h-full w-full bg-white border border-1 border-gray-100 shadow-md flex-col rounded-3xl p-4">
+    <div className="flex h-full w-full gap-5 flex-col bg-white border-r-1 border-[#E1E1E1]">
+      <nav className="flex h-full w-full flex-col">
         {/* Header */}
-        <div className="mb-8 py-2 px-1 flex flex-row items-center gap-2">
+        <div className="flex flex-row p-4.5 h-[85px] items-center gap-2 border-b-1 border-[#E1E1E1]">
           <div className="h-[27px] w-[27px]">
             <LogoIcon />
           </div>
-          <h2 className="truncate text-[22px] font-[700] text-[#03989e]">Nexdoc</h2>
+          <h2 className="truncate text-[22px] font-[700] text-gray-900">Nexdoc</h2>
         </div>
 
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto p-4 py-6.5">
           {/* Primary nav */}
           <div className="flex flex-col gap-2.5">
             {NAV_ITEMS.map((item) => (
@@ -143,7 +142,7 @@ export default function LeftSideDefaultMenu({
         </div>
       </nav>
 
-      <nav className="flex w-full bg-white shadow-md border border-1 border-gray-100 flex-col rounded-3xl p-4 pr-1.5">
+      <nav className="flex w-full flex-col border-t-1 border-[#E1E1E1] p-4 py-5">
         <button
           type="button"
           onClick={() => onQuickAccessDrop()}

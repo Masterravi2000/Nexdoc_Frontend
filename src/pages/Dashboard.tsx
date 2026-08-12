@@ -146,10 +146,10 @@ export default function Dashboard({}: NexdocDashboardProps) {
   }));
 
   return (
-    <div className="h-full flex flex-col gap-5 w-full bg-[#fcfcfc] min-w-[640px] overflow-y-auto px-6 py-6 md:px-10 md:py-8 scrollbar scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-rounded-full scrollbar-track-transparen">
+    <div className="h-full flex flex-col w-full bg-white min-w-[640px] overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-rounded-full scrollbar-track-transparen">
       {/* Top row: brand + status */}
-      <div className="flex bg-white p-5 px-7 rounded-full items-center justify-between border border-1 border-gray-100 shadow-md">
-        <span className="text-lg font-semibold text-gray-900">Dashboard</span>
+      <div className="flex bg-white px-6 h-[85px] items-center justify-between border-b-1 border-[#E1E1E1]">
+        <span className="text-lg font-semibold text-gray-900 h-[27px]">Dashboard</span>
         <div className="flex items-center gap-2 rounded-full bg-gray-200 px-3.5 py-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-gray-600" />
           <span className="text-xs font-semibold text-gray-900">

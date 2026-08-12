@@ -356,7 +356,7 @@ export default function Upload({}: UploadPageProps) {
         return { icon: FileText, color: "text-gray-500" };
 
       default:
-        return { icon: File, color: "text-gray-500" };
+        return { icon: FileText, color: "text-gray-500" };
     }
   };
 
