@@ -361,7 +361,7 @@ export default function Upload({}: UploadPageProps) {
   };
 
   return (
-    <div className="flex h-full gap-4 w-full flex-col bg-[#fcfcfc] p-6">
+    <div className="flex h-full w-full flex-col bg-white">
       {notify === true ? (
         <div className="flex absolute shadow-md px-2.5 self-center flex-row align-center justify-between w-[380px] py-2 rounded-xl bg-red-200">
           <div className="flex flex-row gap-3">
@@ -379,31 +379,31 @@ export default function Upload({}: UploadPageProps) {
       ) : null}
 
       {/* Header */}
-      <div className=" flex py-5 px-6 rounded-3xl bg-white items-center justify-between border border-1 border-gray-100 shadow-md">
-        <div className="flex flex-col">
-          <p className="text-lg font-[700] text-gray-800">Upload documents</p>
-          <p className="text-xs text-gray-600 ml-0.5">
+      <div className=" flex py-5 px-9 h-[85px] min-h-[85px] bg-white items-center justify-between border-b-[2px] border-gray-100">
+        <div className="flex flex-col gap-1">
+          <p className="text-lg font-semibold text-gray-900 h-[27px]">Upload documents</p>
+          <p className="text-xs text-gray-700 font-semibold ml-0.5">
             Up to 5 files per type &middot; 25 files total
           </p>
         </div>
         <div className="flex flex-row items-center gap-3">
-          <span className="rounded-full bg-gray-200 px-4 py-2 text-sm font-[500] text-gray-700">
+          <span className="rounded-xl border-[2px] border-gray-100 px-4 py-2 text-sm font-[500] text-gray-700">
             {totalAttached} / {MAX_TOTAL} attached
           </span>
           <button
             type="button"
             onClick={handleUpload}
             disabled={totalAttached === 0}
-            className="rounded-full mr-2 bg-[#03989e] border border-gray-200 shadow-sm px-6 py-2 text-sm font-semibold hover:bg-[#05888d] disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded-xl mr-2 border-1 border-gray-300 bg-gray-200 px-6 py-2 text-sm font-semibold hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            <p className="text-md font-[500] text-white">Upload</p>
+            <p className="text-md font-[500] text-gray-800 font-semibold">Upload</p>
           </button>
         </div>
       </div>
 
-      <div className="flex min-w-0 flex-row gap-4">
+      <div className="flex min-w-0 flex-row p-6">
         {/* Attach sections — each independently horizontally scrollable */}
-        <div className="min-w-0 flex-1 overflow-hidden bg-white gap-6 p-6 rounded-3xl border border-1 border-gray-100 shadow-md">
+        <div className="min-w-0 flex-1 overflow-hidden bg-white gap-6 p-6 rounded-l-2xl border-[2px] border-gray-100">
           {FILE_TYPE_CONFIGS.map((config) => {
             const Icon = config.icon;
             const files = attached[config.id];
@@ -475,7 +475,7 @@ export default function Upload({}: UploadPageProps) {
         {/* failed file pannel details */}
         {failedFileSection === true ? (
           <div className="h-full">
-            <div className="flex flex-srink-0 flex-col w-[250px] h-[470px] z-100 bg-white rounded-3xl p-5 item-center justify-center border border-1 border-gray-100 shadow-md">
+            <div className="flex flex-srink-0 flex-col w-[250px] h-full z-100 bg-white rounded-r-2xl p-5 item-center justify-center border-t-[2px] border-r-[2px] border-b-[2px] border-gray-100">
               {/* Header Section */}
               <div className="flex flex-row justify-between">
                 <h1 className="text-lg text-gray-700 font-[700] ml-1">
@@ -527,10 +527,10 @@ export default function Upload({}: UploadPageProps) {
             </div>
           </div>
         ) : (
-          <div className="z-100 w-[50px] flex-shrink-0 flex flex-col right-5 h-[470px] justify-between item-center bg-white rounded-full p-2 border border-1 border-gray-100 shadow-md">
+          <div className="z-100 w-[55px] flex-shrink-0 flex flex-col right-5 h-full justify-between item-center bg-white rounded-r-2xl p-2 border-t-[2px] border-r-[2px] border-b-[2px] border-gray-100">
             <button
               onClick={() => setFailedFilesSection(true)}
-              className="p-2 rounded-full bg-gray-200 mt-0.1 hover:bg-gray-300"
+              className="rounded-full flex justify-center self-center items-center w-8 h-8 bg-gray-200 mt-0.1 hover:bg-gray-300"
             >
               <ArrowLeft
                 className="text-gray-500 w-4 h-4 font-[600]"
@@ -553,11 +553,11 @@ export default function Upload({}: UploadPageProps) {
       </div>
 
       {/* Uploading list — vertically scrollable as one unit */}
-      <div className="flex min-h-0 flex-1 flex-col bg-white rounded-3xl p-6 px-7 border border-1 border-gray-100 shadow-md">
+      <div className="flex min-h-0 flex-1 flex-col bg-white p-6 px-7 border border-t-[2px] border-gray-100">
         <p className="mb-2 text-lg font-semibold text-gray-900">
           Uploading {uploading.length > 0 ? `(${uploading.length})` : ""}
         </p>
-        <div className="flex-1 overflow-x-auto space-y-2 p-2 scrollbar scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-rounded-full scrollbar-track-transparen">
+        <div className="flex-1 overflow-x-auto space-y-2 py-2.5 scrollbar scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-rounded-full scrollbar-track-transparen">
           {uploading.length === 0 && (
             <p className="text-center mt-14 text-md self-center text-gray-400">
               Uploading files will appear here.
@@ -574,10 +574,10 @@ export default function Upload({}: UploadPageProps) {
                 <div className="mb-1.5 flex items-center justify-between">
                   <div className="flex min-w-0 items-center gap-2">
                     <Icon
-                      className={`h-8 w-8 flex-shrink-0 ${config.color}`}
+                      className={`h-6 w-6 flex-shrink-0 ${config.color}`}
                       strokeWidth={2.5}
                     />
-                    <span className="truncate text-lg text-gray-900">
+                    <span className="truncate text-md text-gray-900">
                       {f.name}
                     </span>
                   </div>

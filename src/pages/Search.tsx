@@ -35,15 +35,15 @@ function Search() {
   const selectedQuery = location.state?.query ?? "";
 
   return (
-    <div className="flex bg-[#fcfcfc] h-screen flex-row p-6 gap-6">
+    <div className="flex bg-white h-screen flex-row">
       <div className="h-full w-full flex flex-col">
         <TopSearchBar
           initialQuery={selectedQuery}
           nexaiButton={setNexAi}
           nexai={nexai}
         />
-        <div className="flex flex-1 flex-row gap-6 py-5 overflow-hidden">
-          <div className="flex-1 min-h-0 bg-white border border-1 border-gray-100 shadow-md rounded-4xl overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-rounded-full scrollbar-track-transparent">
+        <div className="flex flex-1 flex-row p-6 gap-6 overflow-hidden">
+          <div className="flex-1 min-h-0 bg-white border border-[2px] border-gray-100 rounded-3xl overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-rounded-full scrollbar-track-transparent">
             <Result
               results={results ?? []}
               selectedIndex={selectedIndex}
@@ -61,7 +61,7 @@ function Search() {
       </div>
       {/* nexai part */}
       {nexai === true ? (
-        <div className="w-[40%] h-full flex flex-col bg-white rounded-3xl border border-1 border-gray-100 shadow-md">
+        <div className="w-[40%] h-full flex flex-col bg-white">
           <NexAi
             nexaiButton={setNexAi}
             messages={messages}

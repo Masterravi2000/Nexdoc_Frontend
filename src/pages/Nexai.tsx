@@ -95,9 +95,9 @@ export default function NexAi({
   };
 
   return (
-    <div className="flex h-full w-full min-h-0 flex-col rounded-3xl border-l border-gray-100 bg-[#FCFCFD]">
+    <div className="flex h-full w-full min-h-0 flex-col border-l-[2px] border-gray-100 bg-white">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-gray-100 px-4.5 py-4">
+      <div className="flex items-center h-[85px] min-h-[85px] flex-shrink-0 justify-between border-b-[2px] border-gray-100 px-4.5">
         <div className="flex items-center gap-2.5">
           <NexaiLogo />
           <span className="text-[19px] font-semibold text-gray-800">
@@ -108,9 +108,9 @@ export default function NexAi({
           type="button"
           onClick={onClose}
           aria-label="Close Nex Ai"
-          className="flex p-2 items-center justify-center rounded-md bg-gray-100 hover:bg-gray-200"
+          className="flex p-1.5 items-center justify-center rounded-md border-[2px] border-gray-100 hover:bg-gray-200"
         >
-          <X className="h-3.5 w-3.5 text-gray-500" strokeWidth={2} />
+          <X className="h-3.5 w-3.5 text-gray-400" strokeWidth={2} />
         </button>
       </div>
 
@@ -147,7 +147,7 @@ export default function NexAi({
                     {message.sources.map((source, i) => (
                       <div
                         key={i}
-                        className="flex items-center gap-1.5 border font-[500] border-1 border-gray-400 px-2 text-[10px] text-gray-900 rounded-full"
+                        className="flex items-center gap-1.5 border font-[500] border-1 border-gray-400 px-2 py-0.5 text-[10px] text-gray-900 rounded-full"
                       >
                         <span className="font-semibold">
                           {source.file_name}
@@ -177,8 +177,8 @@ export default function NexAi({
       </div>
 
       {/* Suggested prompts + input */}
-      <div className="border-t border-gray-100 p-4">
-        <div className="flex items-center gap-1.5 rounded-xl bg-gray-200 px-2.5 pl-3 py-2">
+      <div className="border-t-[2px] border-gray-100 p-5">
+        <div className="flex items-center gap-1.5 rounded-xl bg-gray-100 px-3 pl-3 py-2">
           <input
             type="text"
             value={input}

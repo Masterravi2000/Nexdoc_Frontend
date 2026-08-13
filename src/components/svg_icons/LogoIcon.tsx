@@ -3,8 +3,8 @@ export default function LogoIcon() {
     <svg
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
-      width="27"
-      height="27"
+      width="15"
+      height="15"
       viewBox="0 0 500 500"
     >
       <path

@@ -58,7 +58,7 @@ function RowButton({
       type="button"
       onClick={onClick}
       className={`flex w-full items-center gap-4 rounded-lg px-3 py-1.5 text-left text-[15px] transition-colors
-        ${active ? "bg-gray-200" : "hover:bg-gray-100"}`}
+        ${active ? "bg-gray-100" : "hover:bg-gray-50"}`}
     >
       {dotColor ? (
         <span
@@ -67,11 +67,11 @@ function RowButton({
       ) : Icon ? (
         <Icon
           className={`h-[18px] w-[18px] flex-shrink-0 ${active ? "text-gray-900" : "text-gray-900"} ${iconClassName}`}
-          strokeWidth={2.5}
+          strokeWidth={active ? 3 : 2.5}
         />
       ) : null}
       <span
-        className={`truncate font-[600]  ${active ? "text-gray-900" : "text-gray-900"} text-[14px]`}
+        className={`truncate font-[600]  ${active ? "text-gray-900 font-bold" : "text-gray-900"} text-[14px]`}
       >
         {label}
       </span>
@@ -113,14 +113,14 @@ export default function LeftSideDefaultMenu({
   };
 
   return (
-    <div className="flex h-full w-full gap-5 flex-col bg-white border-r-1 border-[#E1E1E1]">
+    <div className="flex h-full w-full gap-5 flex-col bg-white border-r-[2px] border-gray-100">
       <nav className="flex h-full w-full flex-col">
         {/* Header */}
-        <div className="flex flex-row p-4.5 h-[85px] items-center gap-2 border-b-1 border-[#E1E1E1]">
-          <div className="h-[27px] w-[27px]">
+        <div className="flex flex-row p-4.5 px-6.5 h-[85px] items-center gap-2.5 border-b-[2px] border-gray-100">
+          <div className="p-1 rounded-lg border-2 border-gray-800">
             <LogoIcon />
           </div>
-          <h2 className="truncate text-[22px] font-[700] text-gray-900">Nexdoc</h2>
+          <h2 className="truncate text-[23px] font-[700] text-gray-800">Nexdoc</h2>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 py-6.5">
@@ -142,7 +142,7 @@ export default function LeftSideDefaultMenu({
         </div>
       </nav>
 
-      <nav className="flex w-full flex-col border-t-1 border-[#E1E1E1] p-4 py-5">
+      <nav className="flex w-full flex-col border-t-[2px] border-gray-100 p-4 py-5">
         <button
           type="button"
           onClick={() => onQuickAccessDrop()}
