@@ -33,6 +33,7 @@ interface statsState {
   loading: boolean;
   success: boolean;
   error: string | null;
+  initialDataReady: boolean;
   statsData: statsData;
 }
 
@@ -40,6 +41,7 @@ const initialState: statsState = {
   loading: false,
   success: false,
   error: null,
+  initialDataReady: false,
   statsData: {
     total_files: 0,
     today_files: 0,
@@ -78,6 +80,7 @@ const statsSlice = createSlice({
         state.loading = false;
         state.success = true;
         state.statsData = action.payload;
+        state.initialDataReady = true;
       })
       .addCase(fetchStatsThunk.rejected, (state, action) => {
         state.loading = false;

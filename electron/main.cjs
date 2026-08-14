@@ -8,7 +8,7 @@ function startBackend() {
   const backendExe = path.join(
     process.resourcesPath,
     "backend",
-    "NexDocBackend.exe"
+    "NexDocBackend.exe",
   );
 
   backendProcess = spawn(backendExe, [], {
@@ -24,6 +24,8 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1200,
     height: 800,
+    minWidth: 1000,
+    minHeight: 700,
   });
 
   const indexPath = path.join(app.getAppPath(), "dist", "index.html");

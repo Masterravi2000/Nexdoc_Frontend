@@ -134,6 +134,7 @@ export default function Dashboard({}: NexdocDashboardProps) {
     dispatch(getRecentSearchThunk());
   }, [dispatch]);
 
+
   const handleDelete = async (id: number) => {
     await dispatch(deleteRecentSearchThunk(id));
     dispatch(getRecentSearchThunk());
