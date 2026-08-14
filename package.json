@@ -42,7 +42,7 @@
   },
   "build": {
     "appId": "com.nexdoc.app",
-    "productName": "NexDoc",
+    "productName": "Nexdoc",
     "files": [
       "dist/**/*",
       "electron/**/*",
@@ -50,12 +50,13 @@
     ],
     "extraResources": [
       {
-        "from": "C:/Nexdoc/Nexdoc/dist/NexDocBackend",
-        "to": "backend"
+        "from": "C:/Nexdoc/Nexdoc/app/dist/NexDocBackend.exe",
+        "to": "backend/NexDocBackend.exe"
       }
     ],
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "public/nexdoc_icon.ico"
     }
   }
 }

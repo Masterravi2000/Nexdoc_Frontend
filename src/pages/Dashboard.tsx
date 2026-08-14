@@ -148,7 +148,7 @@ export default function Dashboard({}: NexdocDashboardProps) {
   return (
     <div className="h-full flex flex-col w-full bg-white min-w-[640px] overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-rounded-full scrollbar-track-transparen">
       {/* Top row: brand + status */}
-      <div className="flex gap-1 flex-shrink-0 flex-col bg-white justify-center px-9 h-[85px] min-h-[85px] border-b-[2px] border-gray-100">
+      <div className="flex gap-1 flex-shrink-0 flex-col bg-white justify-center px-9 h-[85px] min-h-[85px] border-b-[2px] border-t-[2px] border-gray-100">
         <span className="text-lg font-semibold text-gray-900 h-[27px]">
           Dashboard
         </span>
@@ -251,7 +251,7 @@ export default function Dashboard({}: NexdocDashboardProps) {
           <p className="pl-1 font-medium text-gray-800">Recent searches</p>
           <div className="flex flex-wrap gap-2">
             {recentSearches.length === 0 ? (
-              <div className="flex flex-row justify-center gap-2 pt-6">
+              <div className="flex flex-row justify-center items-center w-full gap-2 pt-6">
                 <SearchCheck className="w-5 h-5 text-gray-400 font-[500]" />
                 <p className="text-gray-400 text-[15px]">
                   Recent searches will appear here

@@ -379,7 +379,7 @@ export default function Upload({}: UploadPageProps) {
       ) : null}
 
       {/* Header */}
-      <div className=" flex py-5 px-9 h-[85px] min-h-[85px] bg-white items-center justify-between border-b-[2px] border-gray-100">
+      <div className=" flex py-5 px-9 h-[85px] min-h-[85px] bg-white items-center justify-between border-b-[2px] border-t-[2px] border-gray-100">
         <div className="flex flex-col gap-1">
           <p className="text-lg font-semibold text-gray-900 h-[27px]">Upload documents</p>
           <p className="text-xs text-gray-700 font-semibold ml-0.5">

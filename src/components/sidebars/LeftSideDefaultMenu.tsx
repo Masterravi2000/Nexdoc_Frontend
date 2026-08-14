@@ -116,7 +116,7 @@ export default function LeftSideDefaultMenu({
     <div className="flex h-full w-full gap-5 flex-col bg-white border-r-[2px] border-gray-100">
       <nav className="flex h-full w-full flex-col">
         {/* Header */}
-        <div className="flex flex-row p-4.5 px-6.5 h-[85px] items-center gap-2.5 border-b-[2px] border-gray-100">
+        <div className="flex flex-row p-4.5 px-6.5 h-[85px] items-center gap-2.5 border-b-[2px] border-t-[2px] border-gray-100">
           <div className="p-1 rounded-lg border-2 border-gray-800">
             <LogoIcon />
           </div>

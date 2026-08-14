@@ -95,9 +95,9 @@ export default function NexAi({
   };
 
   return (
-    <div className="flex h-full w-full min-h-0 flex-col border-l-[2px] border-gray-100 bg-white">
+    <div className="flex h-full w-full min-h-0 flex-col border-l-[2px] border-t-[2px] border-gray-100 bg-white">
       {/* Header */}
-      <div className="flex items-center h-[85px] min-h-[85px] flex-shrink-0 justify-between border-b-[2px] border-gray-100 px-4.5">
+      <div className="flex items-center h-[83px] min-h-[83px] flex-shrink-0 justify-between border-b-[2px] border-gray-100 px-4.5">
         <div className="flex items-center gap-2.5">
           <NexaiLogo />
           <span className="text-[19px] font-semibold text-gray-800">
@@ -177,7 +177,7 @@ export default function NexAi({
       </div>
 
       {/* Suggested prompts + input */}
-      <div className="border-t-[2px] border-gray-100 p-5">
+      <div className="border-t-[2px] border-gray-100 p-5 pb-9">
         <div className="flex items-center gap-1.5 rounded-xl bg-gray-100 px-3 pl-3 py-2">
           <input
             type="text"

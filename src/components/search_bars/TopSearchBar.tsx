@@ -82,7 +82,7 @@ export default function TopSearchBar({
   };
 
   return (
-    <div className="flex w-full items-center p-4.5 gap-4 border-b-[2px] h-[85px] min-h-[85px] flex-srink-0 border-gray-100">
+    <div className="flex w-full items-center p-4.5 gap-4 border-b-[2px] border-t-[2px] h-[85px] min-h-[85px] flex-srink-0 border-gray-100">
       <form
         onSubmit={handleSubmit}
         className="relative flex h-14 flex-1 items-center rounded-2xl bg-white hover:bg-gray-50 pl-5 pr-4"
