@@ -3,15 +3,19 @@ import { useSelector } from "react-redux";
 import { type RootState } from "../../redux/store";
 import { useAppDispatch } from "../../redux/hook";
 import { setStartupCompleted } from "../../redux/appSlice/startupSlice";
-import { backendStartupStatusThunk } from "../../redux/appSlice/startupThunk"; 
+import { backendStartupStatusThunk } from "../../redux/appSlice/startupThunk";
 import { fetchStatsThunk } from "../../redux/stats/statsThunk";
 import PreloaderLogoIcon from "../svg_icons/PreloaderLogoIcon";
 
 function Preloader() {
   const dispatch = useAppDispatch();
 
-  const backendReady = useSelector((state: RootState) => state.status.backendReady);
-  const initialDataReady = useSelector((state: RootState) => state.stats.initialDataReady);
+  const backendReady = useSelector(
+    (state: RootState) => state.status.backendReady,
+  );
+  const initialDataReady = useSelector(
+    (state: RootState) => state.stats.initialDataReady,
+  );
 
   // 1. Polling Effect
   useEffect(() => {
@@ -44,8 +48,15 @@ function Preloader() {
           Nexdoc loading ...
         </span>
       </div>
-      <div className="absolute bottom-10">
-        <span className="text-xl text-gray-200 font-bold">v.01</span>
+      <div className="absolute bottom-10 flex flex-col px-50 gap-7 justify-center items-center">
+        <p className="text-[13px] text-gray-500 text-center bg-gray-50 p-3 rounded-xl">
+          <span className="font-semibold text-gray-700 text-xs">Tech Note:</span> It may
+          take ~1-2 min loading delay because PyTorch's dynamic graph
+          generation on the fly then loading weights for the model. The planned fix is migrating to{" "}
+          <strong>ONNX Runtime</strong> for instant, static C++ execution
+          (deferred for now due to time constraints).
+        </p>
+        <span className="text-xl text-gray-300 font-bold">v.01</span>
       </div>
     </div>
   );
